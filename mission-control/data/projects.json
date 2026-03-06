@@ -1,1 +1,44 @@
-{ "projects": [] }
+{
+  "projects": [
+    {
+      "id": "webworks-schweiz",
+      "name": "WebWorks Schweiz",
+      "description": "Typ A Sales Outbound — Markterschließung Schweiz. 500 Leads, Dossiers fertig, Outreach ab 01.03.2026.",
+      "type": "typ-a-outbound",
+      "status": "active",
+      "client": "WebWorks Schweiz GmbH",
+      "startDate": "2026-03-01",
+      "dataDir": "data/projects/webworks-schweiz",
+      "icp": {
+        "industry": "E-Commerce, Online-Shops",
+        "size": "5-50 MA",
+        "location": "Schweiz (DACH)",
+        "decisionMaker": "Geschäftsführer, eCommerce Manager",
+        "hookStrategy": "E-Commerce SEO (shop_audit.py)"
+      },
+      "stats": {
+        "totalLeads": 500,
+        "aLeads": 79,
+        "bLeads": 344,
+        "cLeads": 77
+      },
+      "currentStep": 6,
+      "notes": "Dossiers und Kontakte fertig aus Firestore. Export ausstehend (gcloud auth needed).",
+      "createdAt": "2026-03-01T00:00:00.000Z",
+      "updatedAt": "2026-03-06T08:00:00.000Z"
+    },
+    {
+      "id": "fg-bau",
+      "name": "FG Bau",
+      "description": "Typ B CRM-Implementierung — HubSpot Setup für FG Bau. €45k, 6 Monate, Start KW 10/2026.",
+      "type": "typ-b-crm",
+      "status": "starting",
+      "client": "FG Bau GmbH",
+      "startDate": "2026-03-09",
+      "dataDir": "data/projects/fg-bau",
+      "notes": "HubSpot CRM-Setup. Kickoff KW 10/2026. Noch in Planung.",
+      "createdAt": "2026-03-06T08:00:00.000Z",
+      "updatedAt": "2026-03-06T08:00:00.000Z"
+    }
+  ]
+}
