@@ -1,0 +1,49 @@
+{
+  "id": "webworks-schweiz",
+  "name": "WebWorks Schweiz",
+  "client": "WebWorks Schweiz GmbH",
+  "type": "typ-a-outbound",
+  "status": "active",
+  "startDate": "2026-03-01",
+  "description": "Markterschließung Schweiz für WebWorks. 500 Leads recherchiert, Dossiers fertig.",
+  "icp": {
+    "industry": "E-Commerce, Online-Shops, Retail mit Online-Präsenz",
+    "sizeRange": "5-50 MA",
+    "location": "Schweiz (CH)",
+    "language": "Deutsch",
+    "decisionMakers": ["Geschäftsführer", "Inhaber", "eCommerce Manager", "Head of Digital"],
+    "hookStrategy": "E-Commerce SEO (shop_audit.py)",
+    "timingTriggers": ["Online-Shop vorhanden", "Aktive E-Commerce-Aktivitäten", "Wachstumsambitionen"],
+    "exclusions": ["Reine B2B ohne Shop", "Großkonzerne >200 MA", "Kein Online-Geschäft"]
+  },
+  "stats": {
+    "totalLeads": 500,
+    "aLeads": 79,
+    "bLeads": 344,
+    "cLeads": 77,
+    "dossiersCreated": 500,
+    "contactsFound": 0,
+    "messagesGenerated": 0,
+    "campaignCreated": false
+  },
+  "pipeline": {
+    "step1_icp": "done",
+    "step2_leads": "done",
+    "step3_dossiers": "done",
+    "step4_contacts": "pending",
+    "step5_outreach": "pending",
+    "step6_quality": "pending",
+    "step7_campaign": "pending"
+  },
+  "files": {
+    "leads": "data/projects/webworks-schweiz/leads.json",
+    "dossiers": "data/projects/webworks-schweiz/dossiers.json",
+    "contacts": "data/projects/webworks-schweiz/contacts.json",
+    "messages": "data/projects/webworks-schweiz/messages.json",
+    "audits": "data/projects/webworks-schweiz/audits/"
+  },
+  "notes": "Leads und Dossiers ursprünglich in Firestore. Export nötig via: gcloud auth application-default login --project=sales-claude-lead-database && python3 /tmp/export_webworks.py",
+  "firestoreProjectId": "5i4HdEm5Lt7vm5C86tQg",
+  "createdAt": "2026-03-01T00:00:00.000Z",
+  "updatedAt": "2026-03-06T08:00:00.000Z"
+}

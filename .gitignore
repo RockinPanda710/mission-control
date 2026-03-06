@@ -36,3 +36,11 @@ mission-control/data/checkpoints/*.json
 
 # Research & marketing files (local only, not pushed to GitHub)
 research/
+
+# Project lead data (potentially large, project-specific)
+mission-control/data/projects/*/leads.json
+mission-control/data/projects/*/dossiers.json
+mission-control/data/projects/*/contacts.json
+mission-control/data/projects/*/messages.json
+mission-control/data/projects/*/audits/
+mission-control/data/projects/*/pdfs/
