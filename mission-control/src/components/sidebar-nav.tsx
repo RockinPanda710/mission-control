@@ -15,7 +15,7 @@ import {
 
 const links = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/priority-matrix", label: "Priority Matrix", icon: Grid2x2 },
+  { href: "/daily-tasks", label: "Daily Tasks", icon: Grid2x2 },
   { href: "/status-board", label: "Status Board", icon: Columns3 },
   { href: "/objectives", label: "Objectives", icon: Target },
   { href: "/brain-dump", label: "Brain Dump", icon: Lightbulb },

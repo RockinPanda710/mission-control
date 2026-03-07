@@ -1,0 +1,19 @@
+[
+  {
+    "id": "conv_UCd6UPO_mzi-",
+    "agentId": "pm-agent",
+    "status": "open",
+    "title": null,
+    "messages": [
+      {
+        "id": "msg_dLXY_Ii1G4pZ",
+        "role": "user",
+        "content": "Ich möchte den Outreach für WebWorks starten. Kannst du mir helfen, die nächsten Schritte zu planen?",
+        "timestamp": "2026-03-07T18:11:59.030Z"
+      }
+    ],
+    "linkedTaskId": null,
+    "createdAt": "2026-03-07T18:11:59.030Z",
+    "updatedAt": "2026-03-07T18:11:59.030Z"
+  }
+]

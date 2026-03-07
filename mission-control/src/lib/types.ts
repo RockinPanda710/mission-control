@@ -294,6 +294,16 @@ export interface InboxFile {
 // ─── Decisions ────────────────────────────────────────────────────────────────
 
 export type DecisionStatus = "pending" | "answered";
+export type DecisionType = "standard" | "campaign-launch";
+
+export interface CampaignLaunchData {
+  campaignName: string;
+  campaignId?: string;
+  projectId?: string;
+  leadCount: number;
+  messagePreview: string;
+  estimatedReach?: number;
+}
 
 export interface DecisionItem {
   id: string;
@@ -302,6 +312,8 @@ export interface DecisionItem {
   question: string;
   options: string[];
   context: string;
+  decisionType?: DecisionType;
+  campaignData?: CampaignLaunchData;
   status: DecisionStatus;
   answer: string | null;
   answeredAt: string | null;
@@ -377,6 +389,48 @@ export interface MissionsFile {
   missions: MissionRun[];
 }
 
+// ─── Project Leads ────────────────────────────────────────────────────────────
+
+export type LinkedinStatus = "found" | "not-found" | "pending";
+export type DossierStatus = "none" | "pending" | "done";
+
+export interface Lead {
+  id: string;
+  firstName: string;
+  lastName: string;
+  company: string;
+  linkedinUrl: string;
+  linkedinStatus: LinkedinStatus;
+  email: string;
+  dossierStatus: DossierStatus;
+  notes: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface LeadsFile {
+  leads: Lead[];
+}
+
+// ─── Project Dossiers ─────────────────────────────────────────────────────────
+
+export interface Dossier {
+  id: string;
+  companyName: string;
+  herkunft: string;        // Origin / how the lead was found
+  statusQuo: string;       // Current situation
+  ansatzpunkte: string;    // Opportunities / angles
+  hook: string;            // Outreach hook
+  pdfPath: string | null;  // Relative path to PDF if generated
+  leadId: string | null;   // Linked lead ID if applicable
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DossiersFile {
+  dossiers: Dossier[];
+}
+
 // ─── Eisenhower quadrant helpers ──────────────────────────────────────────────
 
 export type EisenhowerQuadrant =
@@ -406,4 +460,27 @@ export function valuesFromQuadrant(quadrant: EisenhowerQuadrant): { importance: 
     case "delegate": return { importance: "not-important", urgency: "urgent" };
     case "eliminate": return { importance: "not-important", urgency: "not-urgent" };
   }
+}
+
+// ─── Conversations ─────────────────────────────────────────────────────────────
+
+export type ConversationStatus = "open" | "finalized" | "archived";
+export type MessageRole = "user" | "assistant";
+
+export interface ConversationMessage {
+  id: string;
+  role: MessageRole;
+  content: string;
+  timestamp: string;
+}
+
+export interface Conversation {
+  id: string;
+  agentId: string;
+  status: ConversationStatus;
+  title: string | null;
+  messages: ConversationMessage[];
+  linkedTaskId: string | null;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -168,7 +168,9 @@ function buildSOP(agentId: string, task: TaskDef): string {
     "## Standard Operating Procedures",
     "",
     "You MUST follow these steps:",
-    "1. Read `mission-control/data/ai-context.md` for current state",
+    existsSync(path.join(DATA_DIR, "ai-context.md"))
+      ? "1. Read `mission-control/data/ai-context.md` for current state"
+      : "1. Read `mission-control/data/tasks.json` and `mission-control/data/projects.json` for current state (ai-context.md not yet generated)",
     `2. Check inbox for messages addressed to you: filter \`to: "${agentId}"\``,
     "3. Execute the work described in the task",
     "4. When done, write a clear summary of what was accomplished, results, and any follow-up needed",
@@ -182,6 +184,14 @@ function buildSOP(agentId: string, task: TaskDef): string {
     "Do NOT change the task's kanban status, completedAt, or other top-level fields.",
     "Do NOT write to inbox.json or activity-log.json.",
     "Do NOT run `pnpm gen:context`. Focus entirely on executing the task.",
+    "",
+    "**PROTECTED FILES — never modify these (system-enforced):**",
+    "- `data/agents.json` — agent registry",
+    "- `data/skills-library.json` — skills registry",
+    "- `data/daemon-config.json` — daemon configuration",
+    "- `data/projects.json` — project registry",
+    "- `scripts/**` — daemon source code",
+    "Any attempt to write these files will be blocked by the system.",
   ];
 
   if (task.subtasks.length > 0) {

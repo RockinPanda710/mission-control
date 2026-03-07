@@ -40,7 +40,7 @@
       "WebFetch"
     ],
     "agentTeams": false,
-    "claudeBinaryPath": null,
+    "claudeBinaryPath": "/Users/renesulski/.local/bin/claude",
     "maxTaskContinuations": 2
   },
   "inbox": {

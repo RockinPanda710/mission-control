@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   Grid2x2,
   Columns3,
-  Crosshair,
   Lightbulb,
   Rocket,
   Bot,
@@ -28,7 +27,6 @@ import {
   Brain,
   Palette,
   HeartPulse,
-  Flag,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -41,13 +39,11 @@ import type { AgentDefinition } from "@/lib/types";
 
 const mainLinks = [
   { href: "/", label: "Command Center", icon: LayoutDashboard },
-  { href: "/objectives", label: "Objectives", icon: Crosshair },
   { href: "/projects", label: "Missions", icon: Rocket },
-  { href: "/checkpoints", label: "Checkpoints", icon: Flag },
 ];
 
 const taskLinks = [
-  { href: "/priority-matrix", label: "Priority Matrix", icon: Grid2x2 },
+  { href: "/daily-tasks", label: "Daily Tasks", icon: Grid2x2 },
   { href: "/status-board", label: "Status Board", icon: Columns3 },
 ];
 

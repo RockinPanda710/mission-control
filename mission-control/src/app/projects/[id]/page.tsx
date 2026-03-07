@@ -14,7 +14,8 @@ import {
   type DragStartEvent,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import { Plus } from "lucide-react";
+import { Plus, Users2 } from "lucide-react";
+import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -31,10 +32,13 @@ import type { Task, EisenhowerQuadrant, KanbanStatus } from "@/lib/types";
 import { getQuadrant, valuesFromQuadrant } from "@/lib/types";
 import type { TaskFormData } from "@/components/task-form";
 import { getAgentIcon } from "@/lib/agent-icons";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import { Users, X } from "lucide-react";
 import { RunButton } from "@/components/run-button";
 import { MissionProgress } from "@/components/mission-progress";
+import { WatPipelineTracker } from "@/components/wat-pipeline-tracker";
+import { CampaignsTab } from "@/components/campaigns-tab";
+import { DossierTab } from "@/components/dossier-tab";
 
 function DraggableTask({ task, onClick, isRunning, onRun, pendingDecisionTaskIds }: { task: Task; onClick: () => void; isRunning?: boolean; onRun?: (taskId: string) => void; pendingDecisionTaskIds?: Set<string> }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: task.id });
@@ -75,7 +79,7 @@ export default function ProjectDetailPage() {
 
   const { tasks, update: updateTask, create: createTask, remove: deleteTask, refetch } = useTasks();
   const { goals } = useGoals();
-  const { projects, update: updateProject } = useProjects();
+  const { projects, loading: projectsLoading, update: updateProject } = useProjects();
   const { agents } = useAgents();
   const { decisions } = useDecisions();
   const { runs, runningTaskIds, isTaskRunning, runTask, isProjectRunning, isMissionActive, getMission, runProject, stopProject } = useActiveRuns();
@@ -98,6 +102,15 @@ export default function ProjectDetailPage() {
   const milestones = projectGoals.filter((g) => g.type === "medium-term");
 
   if (!project) {
+    if (projectsLoading) {
+      return (
+        <div className="space-y-4">
+          <BreadcrumbNav items={[{ label: "Missions", href: "/projects" }, { label: "Loading..." }]} />
+          <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+          <div className="h-4 w-96 bg-muted animate-pulse rounded" />
+        </div>
+      );
+    }
     return (
       <div className="space-y-4">
         <BreadcrumbNav items={[{ label: "Missions", href: "/projects" }, { label: "Not Found" }]} />
@@ -156,9 +169,25 @@ export default function ProjectDetailPage() {
     setSelectedTask(null);
   };
 
+  const handleSetPipelineStep = async (step: number) => {
+    const newTags = [
+      ...(project.tags ?? []).filter((t) => !t.startsWith("current-step:")),
+      `current-step:${step}`,
+    ];
+    await updateProject(project.id, { tags: newTags });
+  };
+
+  const handleSetPipelineType = async (type: "typ-a" | "typ-b") => {
+    const newTags = [
+      ...(project.tags ?? []).filter((t) => t !== "typ-a" && t !== "typ-b"),
+      type,
+    ];
+    await updateProject(project.id, { tags: newTags });
+  };
+
   const handleCreateTask = async (data: TaskFormData) => {
     await createTask({
-      id: `task_${Date.now()}`,
+      id: generateId("task"),
       ...data,
       dailyActions: [],
       tags: data.tags.split(",").map((t) => t.trim()).filter(Boolean),
@@ -189,6 +218,12 @@ export default function ProjectDetailPage() {
             size="md"
             title={isMissionActive(projectId) ? "Mission running — click to stop" : "Run all project tasks"}
           />
+          <Button size="sm" variant="outline" asChild className="gap-1.5">
+            <Link href={`/projects/${projectId}/leads`}>
+              <Users2 className="h-3.5 w-3.5" />
+              Leads
+            </Link>
+          </Button>
           <Button size="sm" onClick={() => setShowCreateTask(true)} className="gap-1.5">
             <Plus className="h-3.5 w-3.5" /> Task
           </Button>
@@ -277,6 +312,9 @@ export default function ProjectDetailPage() {
           <TabsTrigger value="priority-matrix">Priority Matrix</TabsTrigger>
           <TabsTrigger value="status-board">Status Board</TabsTrigger>
           <TabsTrigger value="milestones">Milestones</TabsTrigger>
+          <TabsTrigger value="pipeline">Pipeline</TabsTrigger>
+          <TabsTrigger value="campaigns">Campaigns</TabsTrigger>
+          <TabsTrigger value="dossiers">Dossiers</TabsTrigger>
         </TabsList>
 
         <TabsContent value="priority-matrix">
@@ -319,6 +357,23 @@ export default function ProjectDetailPage() {
               ))}
             </div>
           )}
+        </TabsContent>
+
+        <TabsContent value="pipeline">
+          <WatPipelineTracker
+            project={project}
+            tasks={projectTasks}
+            onSetCurrentStep={handleSetPipelineStep}
+            onSetPipelineType={handleSetPipelineType}
+          />
+        </TabsContent>
+
+        <TabsContent value="campaigns">
+          <CampaignsTab projectId={projectId} />
+        </TabsContent>
+
+        <TabsContent value="dossiers">
+          <DossierTab projectId={projectId} />
         </TabsContent>
       </Tabs>
 

@@ -5,6 +5,7 @@ import {
   Plus, CheckSquare, Target, Lightbulb, FolderOpen, Sparkles,
   Mail, HelpCircle, Activity, User, Search, Code, Megaphone, BarChart3,
   AlertTriangle, CircleDot, ShieldAlert, Rocket, Users, Zap, Database, Square,
+  Network, FileText, UserSearch, MessageSquare, Send, Shield, Terminal,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { ProjectCardLarge } from "@/components/project-card-large";
 import { GoalCard } from "@/components/goal-card";
 import { EisenhowerSummary } from "@/components/eisenhower-summary";
+import { PipelineFunnelCard } from "@/components/pipeline-funnel-card";
 import dynamic from "next/dynamic";
 
 const CreateTaskDialog = dynamic(
@@ -61,6 +63,11 @@ const agentIcons: Record<AgentRole, typeof User> = {
   "business-analyst": BarChart3,
 };
 
+// Icon lookup by string name (for dynamic agents from agents.json)
+const iconByName: Record<string, typeof User> = {
+  User, Network, Search, FileText, UserSearch, MessageSquare, Send, Shield, Terminal, Code, Megaphone, BarChart3,
+};
+
 export default function CommandCenterPage() {
   const { data, loading, error, refetch } = useDashboardData();
   const { isRunning: daemonRunning, status: daemonStatus, start: startDaemon, stop: stopDaemon } = useDaemon();
@@ -75,6 +82,7 @@ export default function CommandCenterPage() {
   const tasks = data?.tasks ?? [];
   const goals = data?.goals ?? [];
   const projects = data?.projects ?? [];
+  const agents = data?.agents ?? [];
   const unprocessedEntries = data?.entries ?? [];
   const unreadMessages = data?.messages ?? [];
   const pendingDecisions = data?.decisions ?? [];
@@ -84,11 +92,14 @@ export default function CommandCenterPage() {
   const longTermGoals = goals.filter((g) => g.type === "long-term");
   const milestones = goals.filter((g) => g.type === "medium-term");
 
-  // Agent workload (enhanced)
+  // Agent workload using dynamic agents (fallback to AGENT_ROLES if not loaded yet)
+  const agentList = agents.length > 0
+    ? agents.filter((a) => a.id !== "me").map((a) => ({ id: a.id, label: a.name, icon: a.icon, description: a.description }))
+    : AGENT_ROLES.filter((r) => r.id !== "me");
   const pendingDecisionTaskIds = new Set(
     pendingDecisions.filter((d) => d.taskId).map((d) => d.taskId as string)
   );
-  const agentWorkload = AGENT_ROLES.filter((r) => r.id !== "me").map((role) => {
+  const agentWorkload = agentList.map((role) => {
     const agentTasks = tasks.filter((t) => t.assignedTo === role.id && t.kanban !== "done");
     const inProgress = agentTasks.filter((t) => t.kanban === "in-progress");
     const withDeps = agentTasks.filter((t) => {
@@ -131,7 +142,7 @@ export default function CommandCenterPage() {
   const attentionItems = [
     ...(pendingDecisions.length > 0 ? [{ key: "decisions", icon: HelpCircle, label: `${pendingDecisions.length} pending decision${pendingDecisions.length > 1 ? "s" : ""}`, href: "/decisions", color: "text-yellow-500" }] : []),
     ...(unreadReports.length > 0 ? [{ key: "reports", icon: Mail, label: `${unreadReports.length} agent report${unreadReports.length > 1 ? "s" : ""} to review`, href: "/inbox", color: "text-blue-400" }] : []),
-    ...(doQuadrantMyTasks.length > 0 ? [{ key: "do-tasks", icon: ShieldAlert, label: `${doQuadrantMyTasks.length} DO-quadrant task${doQuadrantMyTasks.length > 1 ? "s" : ""} not started`, href: "/priority-matrix", color: "text-red-400" }] : []),
+    ...(doQuadrantMyTasks.length > 0 ? [{ key: "do-tasks", icon: ShieldAlert, label: `${doQuadrantMyTasks.length} DO-quadrant task${doQuadrantMyTasks.length > 1 ? "s" : ""} not started`, href: "/daily-tasks", color: "text-red-400" }] : []),
     ...(recentCompletions.length > 0 ? [{ key: "completions", icon: CheckSquare, label: `${recentCompletions.length} completed task${recentCompletions.length > 1 ? "s" : ""} to review`, href: "/status-board", color: "text-green-400" }] : []),
   ];
 
@@ -650,7 +661,8 @@ export default function CommandCenterPage() {
           <CardContent>
             <div className="space-y-3">
               {agentWorkload.map((agent) => {
-                const Icon = agentIcons[agent.id];
+                const iconStr = (agent as { icon?: string }).icon;
+                const Icon: typeof User = iconStr ? (iconByName[iconStr] ?? User) : (agentIcons[agent.id as AgentRole] ?? User);
                 const statusIndicator =
                   agent.status === "idle" ? "bg-muted-foreground/40" :
                   agent.status === "overloaded" ? "bg-red-500" :
@@ -734,6 +746,9 @@ export default function CommandCenterPage() {
           )}
         </div>
       </section>
+
+      {/* Outbound Pipeline Funnel */}
+      <PipelineFunnelCard />
 
       {/* Objectives Section */}
       {longTermGoals.length > 0 && (

@@ -376,6 +376,18 @@ export class Dispatcher {
 
         if (hasLiveProcesses) continue;
 
+        // Grace period: if a task completed very recently, handleMissionContinuation()
+        // (spawned as detached process) may still be running. Defer to it for this poll
+        // cycle to avoid double-dispatch.
+        const GRACE_PERIOD_MS = 90_000; // 90 seconds
+        const lastCompleted = mission.lastTaskCompletedAt
+          ? Date.now() - new Date(mission.lastTaskCompletedAt).getTime()
+          : Infinity;
+        if (lastCompleted < GRACE_PERIOD_MS) {
+          logger.debug("dispatcher", `Mission ${mission.id}: skipping re-dispatch — within grace period (${Math.round(lastCompleted / 1000)}s since last completion)`);
+          continue;
+        }
+
         // No live processes — find dispatchable tasks
         const projectTasks = tasksData.tasks.filter((t) => t.projectId === mission.projectId);
         const remaining = projectTasks.filter(

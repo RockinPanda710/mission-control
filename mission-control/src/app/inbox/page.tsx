@@ -229,7 +229,7 @@ export default function InboxPage() {
       });
       if (res.ok) {
         const data = await res.json() as { runId?: string; messageId: string };
-        showInfo(`${agentName} is composing a reply...`);
+        showInfo(`Reply requested from ${agentName}`);
         if (threadKey && data.runId) {
           setRespondingThreads((prev) => {
             const next = new Map(prev);

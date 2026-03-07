@@ -24,7 +24,7 @@ export function EisenhowerSummary({ tasks }: EisenhowerSummaryProps) {
   });
 
   return (
-    <Link href="/priority-matrix">
+    <Link href="/daily-tasks">
       <Card className="cursor-pointer transition-all hover:shadow-lg hover:border-primary/30">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm">Eisenhower Matrix</CardTitle>

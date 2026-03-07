@@ -141,6 +141,12 @@ export function buildSafeEnv(opts?: { agentTeams?: boolean }): Record<string, st
     if (process.env.PATHEXT) safeEnv.PATHEXT = process.env.PATHEXT;
   }
 
+  // Claude Code authentication — required for API access.
+  // When spawned from Claude Desktop: uses CLAUDE_CODE_OAUTH_TOKEN.
+  // When spawned from launchd/CLI: uses ANTHROPIC_API_KEY.
+  if (process.env.ANTHROPIC_API_KEY) safeEnv.ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY;
+  if (process.env.CLAUDE_CODE_OAUTH_TOKEN) safeEnv.CLAUDE_CODE_OAUTH_TOKEN = process.env.CLAUDE_CODE_OAUTH_TOKEN;
+
   // Agent Teams: experimental multi-agent coordination
   if (opts?.agentTeams) {
     safeEnv.CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS = "1";
