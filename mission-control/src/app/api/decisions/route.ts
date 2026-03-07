@@ -52,6 +52,8 @@ export async function POST(request: Request) {
       question: body.question,
       options: body.options,
       context: body.context,
+      ...(body.decisionType ? { decisionType: body.decisionType } : {}),
+      ...(body.campaignData ? { campaignData: body.campaignData } : {}),
       status: "pending",
       answer: null,
       answeredAt: null,

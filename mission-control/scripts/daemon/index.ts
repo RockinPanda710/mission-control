@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { readFileSync, writeFileSync, existsSync, unlinkSync } from "fs";
+import { execSync } from "child_process";
 import path from "path";
 import { logger } from "./logger";
 import { loadConfig } from "./config";
@@ -135,6 +136,19 @@ async function handleStart(): Promise<void> {
 
   // Start scheduler
   scheduler.start();
+
+  // Generate AI context snapshot before first poll
+  logger.info("daemon", "Generating AI context snapshot...");
+  try {
+    execSync("pnpm gen:context", {
+      cwd: path.resolve(__dirname, "../../"),
+      stdio: "pipe",
+      timeout: 15_000,
+    });
+    logger.info("daemon", "AI context generated successfully");
+  } catch (err) {
+    logger.warn("daemon", `gen:context failed — continuing without: ${err instanceof Error ? err.message : String(err)}`);
+  }
 
   // Run initial poll immediately
   if (config.polling.enabled) {

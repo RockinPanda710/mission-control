@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { getTasks, getGoals, getProjects, getBrainDump, getInbox, getDecisions, getActivityLog } from "@/lib/data";
+import { getTasks, getGoals, getProjects, getBrainDump, getInbox, getDecisions, getActivityLog, getAgents } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   // Read all data files in parallel (reads are safe, no locking needed)
-  const [tasksData, goalsData, projectsData, brainDumpData, inboxData, decisionsData, activityData] = await Promise.all([
+  const [tasksData, goalsData, projectsData, brainDumpData, inboxData, decisionsData, activityData, agentsData] = await Promise.all([
     getTasks(),
     getGoals(),
     getProjects(),
@@ -13,7 +13,10 @@ export async function GET() {
     getInbox(),
     getDecisions(),
     getActivityLog(),
+    getAgents(),
   ]);
+
+  const agents = agentsData.agents.filter((a) => a.status === "active");
 
   // Filter soft-deleted
   const tasks = tasksData.tasks.filter((t) => !t.deletedAt);
@@ -77,8 +80,9 @@ export async function GET() {
       tasks,
       goals,
       projects,
+      agents,
       entries: unprocessedEntries.slice(0, 5),
-      messages: unreadMessages,
+      messages: unreadMessages.slice(0, 50),
       decisions: pendingDecisions,
     },
     { headers: { "Cache-Control": "private, max-age=2, stale-while-revalidate=5" } },

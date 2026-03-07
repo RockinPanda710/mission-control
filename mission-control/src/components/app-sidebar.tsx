@@ -39,7 +39,7 @@ import type { AgentDefinition } from "@/lib/types";
 
 const mainLinks = [
   { href: "/", label: "Command Center", icon: LayoutDashboard },
-  { href: "/projects", label: "Projekte", icon: Rocket },
+  { href: "/projects", label: "Missions", icon: Rocket },
 ];
 
 const taskLinks = [

@@ -148,6 +148,22 @@ function handleTaskCompletion(taskId: string, agentId: string, stdout: string): 
       task.updatedAt = now;
       writeFileSync(TASKS_FILE, JSON.stringify(tasksData, null, 2), "utf-8");
       logger.info("run-task", `Marked task ${taskId} as done`);
+    } else if (!task) {
+      // Task not found — tasks.json may have been corrupted by an agent write.
+      // Inject a tombstone entry so pollMissions() and handleMissionContinuation()
+      // never re-dispatch this task ID.
+      logger.warn("run-task", `Task ${taskId} not found in tasks.json — injecting tombstone to prevent re-dispatch`);
+      tasksData.tasks.push({
+        id: taskId,
+        title: `[Recovered] ${taskId}`,
+        kanban: "done",
+        assignedTo: agentId,
+        completedAt: now,
+        updatedAt: now,
+        createdAt: now,
+        _tombstone: true,
+      });
+      writeFileSync(TASKS_FILE, JSON.stringify(tasksData, null, 2), "utf-8");
     }
   } catch (err) {
     logger.error("run-task", `Failed to mark task ${taskId} as done: ${err instanceof Error ? err.message : String(err)}`);
@@ -623,6 +639,28 @@ function handleMissionContinuation(
       t.assignedTo !== "me" &&
       !t.deletedAt
   );
+
+  // Belt-and-suspenders: if the just-completed task is still in remaining,
+  // handleTaskCompletion() must have failed to mark it. Force-mark it now
+  // to prevent an immediate re-dispatch.
+  if (taskResult.status === "completed" && remaining.some((t) => t.id === completedTaskId)) {
+    logger.warn("run-task", `Task ${completedTaskId} still in remaining after completion — force-marking as done in tasks.json`);
+    try {
+      const tasksDataFresh = JSON.parse(readFileSync(TASKS_FILE, "utf-8")) as { tasks: Array<Record<string, unknown>> };
+      const staleTask = tasksDataFresh.tasks.find((t) => t.id === completedTaskId);
+      if (staleTask) {
+        staleTask.kanban = "done";
+        staleTask.completedAt = new Date().toISOString();
+        staleTask.updatedAt = new Date().toISOString();
+        writeFileSync(TASKS_FILE, JSON.stringify(tasksDataFresh, null, 2), "utf-8");
+      }
+    } catch (err) {
+      logger.error("run-task", `Force-mark failed for ${completedTaskId}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+    // Remove from local remaining list so this task is not re-dispatched in this cycle
+    const idx = remaining.findIndex((t) => t.id === completedTaskId);
+    if (idx !== -1) remaining.splice(idx, 1);
+  }
 
   if (remaining.length === 0) {
     // Mission complete!

@@ -32,7 +32,7 @@ import type { Task, EisenhowerQuadrant, KanbanStatus } from "@/lib/types";
 import { getQuadrant, valuesFromQuadrant } from "@/lib/types";
 import type { TaskFormData } from "@/components/task-form";
 import { getAgentIcon } from "@/lib/agent-icons";
-import { cn } from "@/lib/utils";
+import { cn, generateId } from "@/lib/utils";
 import { Users, X } from "lucide-react";
 import { RunButton } from "@/components/run-button";
 import { MissionProgress } from "@/components/mission-progress";
@@ -79,7 +79,7 @@ export default function ProjectDetailPage() {
 
   const { tasks, update: updateTask, create: createTask, remove: deleteTask, refetch } = useTasks();
   const { goals } = useGoals();
-  const { projects, update: updateProject } = useProjects();
+  const { projects, loading: projectsLoading, update: updateProject } = useProjects();
   const { agents } = useAgents();
   const { decisions } = useDecisions();
   const { runs, runningTaskIds, isTaskRunning, runTask, isProjectRunning, isMissionActive, getMission, runProject, stopProject } = useActiveRuns();
@@ -102,6 +102,15 @@ export default function ProjectDetailPage() {
   const milestones = projectGoals.filter((g) => g.type === "medium-term");
 
   if (!project) {
+    if (projectsLoading) {
+      return (
+        <div className="space-y-4">
+          <BreadcrumbNav items={[{ label: "Missions", href: "/projects" }, { label: "Loading..." }]} />
+          <div className="h-8 w-48 bg-muted animate-pulse rounded" />
+          <div className="h-4 w-96 bg-muted animate-pulse rounded" />
+        </div>
+      );
+    }
     return (
       <div className="space-y-4">
         <BreadcrumbNav items={[{ label: "Missions", href: "/projects" }, { label: "Not Found" }]} />
@@ -178,7 +187,7 @@ export default function ProjectDetailPage() {
 
   const handleCreateTask = async (data: TaskFormData) => {
     await createTask({
-      id: `task_${Date.now()}`,
+      id: generateId("task"),
       ...data,
       dailyActions: [],
       tags: data.tags.split(",").map((t) => t.trim()).filter(Boolean),

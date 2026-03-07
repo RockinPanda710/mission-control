@@ -226,6 +226,17 @@ export const inboxUpdateSchema = z.object({
 
 // ─── Decision schemas ──────────────────────────────────────────────────────────
 
+const decisionTypeEnum = z.enum(["standard", "campaign-launch"]);
+
+const campaignLaunchDataSchema = z.object({
+  campaignName: z.string().min(1).max(LIMITS.TITLE),
+  campaignId: z.string().max(100).optional(),
+  projectId: z.string().max(100).optional(),
+  leadCount: z.number().int().min(0),
+  messagePreview: z.string().max(2000),
+  estimatedReach: z.number().int().min(0).optional(),
+});
+
 export const decisionCreateSchema = z.object({
   id: z.string().optional(),
   requestedBy: actorEnum.optional().default("developer"),
@@ -233,6 +244,8 @@ export const decisionCreateSchema = z.object({
   question: z.string().min(1, "Question is required").max(LIMITS.QUESTION),
   options: z.array(z.string().max(LIMITS.ANSWER)).max(LIMITS.MAX_OPTIONS).optional().default([]),
   context: z.string().max(LIMITS.CONTEXT).optional().default(""),
+  decisionType: decisionTypeEnum.optional(),
+  campaignData: campaignLaunchDataSchema.optional(),
   createdAt: z.string().max(30).optional(),
 });
 
@@ -245,6 +258,8 @@ export const decisionUpdateSchema = z.object({
   context: z.string().max(LIMITS.CONTEXT).optional(),
   requestedBy: actorEnum.optional(),
   taskId: z.string().nullable().optional(),
+  decisionType: decisionTypeEnum.optional(),
+  campaignData: campaignLaunchDataSchema.optional(),
 });
 
 // ─── Activity Log schemas ──────────────────────────────────────────────────────

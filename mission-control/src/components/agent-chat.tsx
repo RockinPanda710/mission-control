@@ -60,10 +60,12 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
     fetchConversations().finally(() => setLoading(false));
   }, [fetchConversations]);
 
-  // Poll for new messages when a conversation is open
+  // Poll for new messages when a conversation is open (skip when tab hidden)
   useEffect(() => {
     if (!activeConvId) return;
-    pollRef.current = setInterval(fetchConversations, POLL_INTERVAL);
+    pollRef.current = setInterval(() => {
+      if (document.visibilityState === "visible") fetchConversations();
+    }, POLL_INTERVAL);
     return () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
@@ -113,7 +115,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
       }
       setInput("");
     } catch {
-      showError("Nachricht konnte nicht gesendet werden.");
+      showError("Failed to send message.");
     } finally {
       setSending(false);
     }
@@ -130,12 +132,12 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
         body: JSON.stringify({ action: "process-conversation", conversationId: activeConvId }),
       });
       if (res.ok) {
-        showSuccess("Antwort wird angefordert — PM wird im nächsten Daemon-Lauf antworten.");
+        showSuccess("Reply requested — the PM agent will respond on the next daemon run.");
       } else {
-        showSuccess("Antwort angefordert. PM antwortet beim nächsten Polling-Zyklus.");
+        showError("Failed to request reply. The daemon may not be running.");
       }
     } catch {
-      showSuccess("Antwort angefordert. PM antwortet beim nächsten Polling-Zyklus.");
+      showError("Failed to request reply. Check if the daemon is running.");
     } finally {
       setRequestingReply(false);
     }
@@ -156,7 +158,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
       });
       if (!res.ok) throw new Error();
       const data = await res.json() as { task: { id: string; title: string } };
-      showSuccess(`Task erstellt: "${data.task.title}"`);
+      showSuccess(`Task created: "${data.task.title}"`);
       setShowFinalize(false);
       // Update local state
       setConversations((prev) =>
@@ -167,7 +169,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
         )
       );
     } catch {
-      showError("Task konnte nicht erstellt werden.");
+      showError("Failed to create task.");
     }
   }
 
@@ -199,7 +201,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
     return (
       <div className="flex items-center gap-2 text-muted-foreground p-4">
         <Loader2 className="h-4 w-4 animate-spin" />
-        <span>Lade Gespräche…</span>
+        <span>Loading conversations…</span>
       </div>
     );
   }
@@ -215,12 +217,12 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
           onClick={startNewConversation}
         >
           <Plus className="h-4 w-4" />
-          Neues Gespräch
+          New Conversation
         </Button>
 
         {conversations.length === 0 && (
           <p className="text-sm text-muted-foreground px-1">
-            Noch keine Gespräche. Starte ein neues, um dem PM einen Auftrag zu geben.
+            No conversations yet. Start one to give the PM agent a task.
           </p>
         )}
 
@@ -236,7 +238,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
           >
             <div className="flex items-center justify-between gap-2">
               <span className="truncate font-medium">
-                {conv.title || conv.messages[0]?.content.slice(0, 40) || "Gespräch"}
+                {conv.title || conv.messages[0]?.content.slice(0, 40) || "Conversation"}
               </span>
               {conv.status === "finalized" && (
                 <Badge variant="secondary" className="shrink-0 text-xs">
@@ -248,7 +250,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
               )}
             </div>
             <div className="text-xs text-muted-foreground mt-0.5">
-              {conv.messages.length} Nachricht{conv.messages.length !== 1 ? "en" : ""}
+              {conv.messages.length} message{conv.messages.length !== 1 ? "s" : ""}
             </div>
           </button>
         ))}
@@ -261,11 +263,11 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
             <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <Bot className="h-10 w-10 text-muted-foreground" />
               <p className="text-sm text-muted-foreground max-w-xs">
-                Wähle ein Gespräch aus der Liste oder starte ein neues Gespräch mit {agentName}.
+                Select a conversation from the list or start a new one with {agentName}.
               </p>
               <Button variant="outline" size="sm" onClick={startNewConversation}>
                 <Plus className="h-4 w-4 mr-2" />
-                Neues Gespräch starten
+                Start New Conversation
               </Button>
             </CardContent>
           </Card>
@@ -277,10 +279,10 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                 <CardHeader className="pb-2 border-b">
                   <div className="flex items-center justify-between">
                     <CardTitle className="text-sm font-medium">
-                      {activeConv.title || activeConv.messages[0]?.content.slice(0, 50) || "Gespräch"}
+                      {activeConv.title || activeConv.messages[0]?.content.slice(0, 50) || "Conversation"}
                     </CardTitle>
                     {activeConv.status === "finalized" && (
-                      <Badge variant="secondary">Finalisiert</Badge>
+                      <Badge variant="secondary">Finalized</Badge>
                     )}
                   </div>
                 </CardHeader>
@@ -318,7 +320,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                         >
                           <p className="whitespace-pre-wrap">{msg.content}</p>
                           <p className="mt-1 text-[10px] opacity-60">
-                            {new Date(msg.timestamp).toLocaleTimeString("de-DE", {
+                            {new Date(msg.timestamp).toLocaleTimeString("en-GB", {
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
@@ -337,7 +339,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
               <Card>
                 <CardHeader className="pb-2">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm">Als Task erstellen</CardTitle>
+                    <CardTitle className="text-sm">Create Task</CardTitle>
                     <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setShowFinalize(false)}>
                       <X className="h-4 w-4" />
                     </Button>
@@ -345,26 +347,26 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground">Titel *</label>
+                    <label className="text-xs font-medium text-muted-foreground">Title *</label>
                     <input
                       className="mt-1 w-full rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                       value={finalizeForm.title}
                       onChange={(e) => setFinalizeForm((f) => ({ ...f, title: e.target.value }))}
-                      placeholder="Task-Titel…"
+                      placeholder="Task title…"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground">Beschreibung</label>
+                    <label className="text-xs font-medium text-muted-foreground">Description</label>
                     <Textarea
                       className="mt-1 text-sm"
                       rows={3}
                       value={finalizeForm.description}
                       onChange={(e) => setFinalizeForm((f) => ({ ...f, description: e.target.value }))}
-                      placeholder="Optionaler Kontext…"
+                      placeholder="Optional context…"
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground">Priorität</label>
+                    <label className="text-xs font-medium text-muted-foreground">Priority</label>
                     <select
                       className="mt-1 w-full rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-ring"
                       value={finalizeForm.priority}
@@ -375,8 +377,8 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                         }))
                       }
                     >
-                      <option value="urgent">Dringend</option>
-                      <option value="high">Hoch</option>
+                      <option value="urgent">Urgent</option>
+                      <option value="high">High</option>
                       <option value="normal">Normal</option>
                     </select>
                   </div>
@@ -388,10 +390,10 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                       className="flex-1"
                     >
                       <CheckSquare className="h-4 w-4 mr-2" />
-                      Task erstellen
+                      Create Task
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => setShowFinalize(false)}>
-                      Abbrechen
+                      Cancel
                     </Button>
                   </div>
                 </CardContent>
@@ -402,7 +404,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
             {activeConv?.status !== "finalized" && (
               <div className="space-y-2">
                 <Textarea
-                  placeholder={activeConvId ? "Antwort schreiben… (Cmd+Enter zum Senden)" : "Neues Gespräch beginnen… (Cmd+Enter zum Senden)"}
+                  placeholder={activeConvId ? "Write a reply… (Cmd+Enter to send)" : "Start a new conversation… (Cmd+Enter to send)"}
                   rows={3}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -423,7 +425,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                       ) : (
                         <RefreshCw className="h-3.5 w-3.5" />
                       )}
-                      Antwort anfordern
+                      Request Reply
                     </Button>
                     {activeConvId && (
                       <Button
@@ -433,7 +435,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                         className="gap-2"
                       >
                         <CheckSquare className="h-3.5 w-3.5" />
-                        Als Task erstellen
+                        Create as Task
                       </Button>
                     )}
                   </div>
@@ -448,7 +450,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                     ) : (
                       <Send className="h-3.5 w-3.5" />
                     )}
-                    Senden
+                    Send
                   </Button>
                 </div>
               </div>
@@ -456,10 +458,10 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
 
             {activeConv?.status === "finalized" && (
               <div className="rounded-lg border border-dashed p-4 text-center text-sm text-muted-foreground">
-                Gespräch finalisiert.{" "}
+                Conversation finalized.{" "}
                 {activeConv.linkedTaskId && (
                   <a href="/status-board" className="text-primary underline">
-                    Task im Status Board ansehen
+                    View task in Status Board
                   </a>
                 )}
               </div>

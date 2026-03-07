@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import type { Task, Goal, Project, BrainDumpEntry, InboxMessage, DecisionItem, ActivityEvent } from "@/lib/types";
+import type { Task, Goal, Project, BrainDumpEntry, InboxMessage, DecisionItem, ActivityEvent, AgentDefinition } from "@/lib/types";
 import { apiFetch } from "@/lib/api-client";
 
 export interface DashboardStats {
@@ -38,6 +38,7 @@ export interface DashboardData {
   tasks: Task[];
   goals: Goal[];
   projects: Project[];
+  agents: AgentDefinition[];
   entries: BrainDumpEntry[];
   messages: InboxMessage[];
   decisions: DecisionItem[];
