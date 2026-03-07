@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { Bot, User, Plus, Send, RefreshCw, CheckSquare, Loader2, X } from "lucide-react";
+import { Bot, User, Plus, Send, CheckSquare, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,6 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
   const [activeConvId, setActiveConvId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
-  const [requestingReply, setRequestingReply] = useState(false);
   const [input, setInput] = useState("");
   const [showFinalize, setShowFinalize] = useState(false);
   const [newConvMode, setNewConvMode] = useState(false);
@@ -83,12 +82,27 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
     setNewConvMode(true);
   }
 
+  // Fire-and-forget: ask daemon to process this conversation
+  async function requestReply(convId: string) {
+    try {
+      await apiFetch("/api/daemon", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "process-conversation", conversationId: convId }),
+      });
+    } catch {
+      // Daemon may not support this action yet — silently ignore
+    }
+  }
+
   async function handleSend() {
     if (!input.trim()) return;
 
     setSending(true);
     try {
-      if (!activeConvId) {
+      let convId = activeConvId;
+
+      if (!convId) {
         // Start new conversation
         const res = await apiFetch("/api/conversations", {
           method: "POST",
@@ -100,9 +114,10 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
         setConversations((prev) => [data.conversation, ...prev]);
         setActiveConvId(data.conversation.id);
         setNewConvMode(false);
+        convId = data.conversation.id;
       } else {
         // Add to existing conversation
-        const res = await apiFetch(`/api/conversations/${activeConvId}`, {
+        const res = await apiFetch(`/api/conversations/${convId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: { role: "user", content: input } }),
@@ -110,36 +125,17 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
         if (!res.ok) throw new Error("Failed to send message");
         const data = await res.json() as { conversation: Conversation };
         setConversations((prev) =>
-          prev.map((c) => (c.id === activeConvId ? data.conversation : c))
+          prev.map((c) => (c.id === convId ? data.conversation : c))
         );
       }
       setInput("");
+
+      // Auto-request reply from daemon (fire-and-forget)
+      requestReply(convId);
     } catch {
       showError("Failed to send message.");
     } finally {
       setSending(false);
-    }
-  }
-
-  async function handleRequestReply() {
-    if (!activeConvId) return;
-    setRequestingReply(true);
-    try {
-      // Trigger daemon to process this conversation
-      const res = await apiFetch("/api/daemon", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "process-conversation", conversationId: activeConvId }),
-      });
-      if (res.ok) {
-        showSuccess("Reply requested — the PM agent will respond on the next daemon run.");
-      } else {
-        showError("Failed to request reply. The daemon may not be running.");
-      }
-    } catch {
-      showError("Failed to request reply. Check if the daemon is running.");
-    } finally {
-      setRequestingReply(false);
     }
   }
 
@@ -191,7 +187,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
@@ -404,7 +400,7 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
             {activeConv?.status !== "finalized" && (
               <div className="space-y-2">
                 <Textarea
-                  placeholder={activeConvId ? "Write a reply… (Cmd+Enter to send)" : "Start a new conversation… (Cmd+Enter to send)"}
+                  placeholder={activeConvId ? "Write a reply… (Enter to send)" : "Start a new conversation… (Enter to send)"}
                   rows={3}
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
@@ -412,33 +408,19 @@ export function AgentChat({ agentId, agentName }: AgentChatProps) {
                   disabled={sending}
                 />
                 <div className="flex items-center justify-between gap-2">
-                  <div className="flex gap-2">
+                  {activeConvId ? (
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={handleRequestReply}
-                      disabled={!activeConvId || requestingReply}
+                      onClick={openFinalize}
                       className="gap-2"
                     >
-                      {requestingReply ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                      ) : (
-                        <RefreshCw className="h-3.5 w-3.5" />
-                      )}
-                      Request Reply
+                      <CheckSquare className="h-3.5 w-3.5" />
+                      Create as Task
                     </Button>
-                    {activeConvId && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={openFinalize}
-                        className="gap-2"
-                      >
-                        <CheckSquare className="h-3.5 w-3.5" />
-                        Create as Task
-                      </Button>
-                    )}
-                  </div>
+                  ) : (
+                    <div />
+                  )}
                   <Button
                     size="sm"
                     onClick={handleSend}

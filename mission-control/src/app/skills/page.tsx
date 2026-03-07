@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Plus, BookOpen, Tag, Terminal, Copy, Check } from "lucide-react";
+import { Plus, BookOpen, Tag, Terminal, Copy, Check, RefreshCw, Loader2, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/empty-state";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
 import { Tip } from "@/components/ui/tip";
@@ -14,6 +15,8 @@ import { SkillCardSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
 import { SKILLS } from "@/lib/types";
 import type { SkillDefinition } from "@/lib/types";
+import { apiFetch } from "@/lib/api-client";
+import { showSuccess, showError } from "@/lib/toast";
 
 function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
@@ -83,6 +86,41 @@ export default function SkillsPage() {
   const { skills, loading, error: skillsError, refetch } = useSkills();
   const { agents } = useAgents();
   const router = useRouter();
+  const [syncing, setSyncing] = useState(false);
+  const [search, setSearch] = useState("");
+  const didAutoSync = useRef(false);
+
+  // Auto-sync from workspace on page load (silent, no toast)
+  useEffect(() => {
+    if (didAutoSync.current) return;
+    didAutoSync.current = true;
+    apiFetch("/api/skills/sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ autoAssign: true }),
+    }).then((res) => {
+      if (res.ok) refetch();
+    }).catch(() => { /* silent */ });
+  }, [refetch]);
+
+  async function handleSync() {
+    setSyncing(true);
+    try {
+      const res = await apiFetch("/api/skills/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ autoAssign: true }),
+      });
+      if (!res.ok) throw new Error();
+      const report = await res.json() as { created: number; updated: number; unchanged: number; total: number };
+      showSuccess(`Synced ${report.total} skills: ${report.created} new, ${report.updated} updated, ${report.unchanged} unchanged`);
+      refetch();
+    } catch {
+      showError("Failed to sync skills from workspace.");
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   const getAgentNames = (agentIds: string[]) =>
     agentIds.map((id) => agents.find((a) => a.id === id)?.name ?? id);
@@ -117,14 +155,22 @@ export default function SkillsPage() {
         <div>
           <h1 className="text-xl font-bold">Skills Library</h1>
           <p className="text-sm text-muted-foreground mt-0.5">
-            {skills.length} skill{skills.length !== 1 ? "s" : ""} available
+            {skills.length} skill{skills.length !== 1 ? "s" : ""}
           </p>
         </div>
-        <Tip content="Create a new skill">
-          <Button size="sm" onClick={() => router.push("/skills/new")} className="gap-1.5">
-            <Plus className="h-3.5 w-3.5" /> New Skill
-          </Button>
-        </Tip>
+        <div className="flex items-center gap-2">
+          <Tip content="Import skills from workspace (Skills/skills/)">
+            <Button size="sm" variant="outline" onClick={handleSync} disabled={syncing} className="gap-1.5">
+              {syncing ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />}
+              Sync from Workspace
+            </Button>
+          </Tip>
+          <Tip content="Create a new skill">
+            <Button size="sm" onClick={() => router.push("/skills/new")} className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" /> New Skill
+            </Button>
+          </Tip>
+        </div>
       </div>
 
       {skills.length === 0 ? (
@@ -135,17 +181,35 @@ export default function SkillsPage() {
           actionLabel="Create a skill"
           onAction={() => router.push("/skills/new")}
         />
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {skills.map((skill) => (
-            <SkillCard
-              key={skill.id}
-              skill={skill}
-              agentNames={getAgentNames(skill.agentIds)}
-            />
-          ))}
-        </div>
-      )}
+      ) : (() => {
+        const q = search.toLowerCase();
+        const filtered = q
+          ? skills.filter(s => s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q))
+          : skills;
+        const sorted = [...filtered].sort((a, b) => a.name.localeCompare(b.name));
+        return (
+          <>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search skills..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 h-9"
+              />
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {sorted.map((skill) => (
+                <SkillCard
+                  key={skill.id}
+                  skill={skill}
+                  agentNames={getAgentNames(skill.agentIds)}
+                />
+              ))}
+            </div>
+          </>
+        );
+      })()}
 
       {/* AI Commands (slash commands) */}
       <div className="rounded-xl border bg-card">

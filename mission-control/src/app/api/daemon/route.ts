@@ -123,7 +123,39 @@ export async function POST(request: Request) {
       }
     }
 
-    return NextResponse.json({ error: "Invalid action. Use 'start' or 'stop'" }, { status: 400 });
+    if (action === "process-conversation") {
+      const conversationId = body.conversationId;
+      if (!conversationId) {
+        return NextResponse.json({ error: "conversationId required" }, { status: 400 });
+      }
+
+      // Spawn the conversation reply script as a detached background process
+      const cwd = process.cwd();
+      const scriptPath = path.resolve(cwd, "scripts", "daemon", "run-conversation-reply.ts");
+
+      try {
+        const child = spawn(process.execPath, ["--import", "tsx", scriptPath, conversationId], {
+          cwd,
+          detached: true,
+          stdio: "ignore",
+          shell: false,
+        });
+        child.unref();
+
+        return NextResponse.json({
+          message: "Conversation processing started",
+          conversationId,
+          pid: child.pid,
+        });
+      } catch (err) {
+        return NextResponse.json(
+          { error: `Failed to spawn reply process: ${err instanceof Error ? err.message : String(err)}` },
+          { status: 500 }
+        );
+      }
+    }
+
+    return NextResponse.json({ error: "Invalid action. Use 'start', 'stop', or 'process-conversation'" }, { status: 400 });
   } catch (err) {
     return NextResponse.json(
       { error: `Invalid request: ${err instanceof Error ? err.message : String(err)}` },

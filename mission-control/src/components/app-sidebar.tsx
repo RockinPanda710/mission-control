@@ -77,7 +77,7 @@ export function AppSidebar({ collapsed, unreadInbox = 0, pendingDecisions = 0, i
   const pathname = usePathname();
   const badges = { unreadInbox, pendingDecisions };
 
-  const activeAgents = agents.filter((a) => a.status === "active");
+  const activeAgents = agents.filter((a) => a.status === "active").sort((a, b) => a.name.localeCompare(b.name));
 
   // On mobile: render as full-height overlay drawer (always expanded)
   if (isMobile) {

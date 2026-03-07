@@ -257,6 +257,6 @@ export function useAgents() {
 }
 
 export function useSkills() {
-  const { items: skills, ...rest } = useDataResource<SkillDefinition>("skills", "skills", "Skill");
+  const { items: skills, ...rest } = useDataResource<SkillDefinition>("skills", "skills", "Skill", 60_000);
   return { skills, ...rest };
 }

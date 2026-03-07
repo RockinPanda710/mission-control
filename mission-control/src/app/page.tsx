@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import {
-  Plus, CheckSquare, Target, Lightbulb, FolderOpen, Sparkles,
+  Plus, CheckSquare, Target, FolderOpen,
   Mail, HelpCircle, Activity, User, Search, Code, Megaphone, BarChart3,
   AlertTriangle, CircleDot, ShieldAlert, Rocket, Users, Zap, Database, Square,
   Network, FileText, UserSearch, MessageSquare, Send, Shield, Terminal,
@@ -11,10 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BreadcrumbNav } from "@/components/breadcrumb-nav";
-import { ProjectCardLarge } from "@/components/project-card-large";
 import { GoalCard } from "@/components/goal-card";
-import { EisenhowerSummary } from "@/components/eisenhower-summary";
-import { PipelineFunnelCard } from "@/components/pipeline-funnel-card";
 import dynamic from "next/dynamic";
 
 const CreateTaskDialog = dynamic(
@@ -25,10 +22,7 @@ const CreateProjectDialog = dynamic(
   () => import("@/components/create-project-dialog").then((mod) => ({ default: mod.CreateProjectDialog })),
   { ssr: false }
 );
-const CreateGoalDialog = dynamic(
-  () => import("@/components/create-goal-dialog").then((mod) => ({ default: mod.CreateGoalDialog })),
-  { ssr: false }
-);
+
 import { useDashboardData } from "@/hooks/use-dashboard-data";
 import { useDaemon } from "@/hooks/use-daemon";
 import { useActiveRunsContext as useActiveRuns } from "@/providers/active-runs-provider";
@@ -76,7 +70,7 @@ export default function CommandCenterPage() {
 
   const [showCreateTask, setShowCreateTask] = useState(false);
   const [showCreateProject, setShowCreateProject] = useState(false);
-  const [showCreateGoal, setShowCreateGoal] = useState(false);
+
 
   // Derived data from batched /api/dashboard response
   const tasks = data?.tasks ?? [];
@@ -188,35 +182,7 @@ export default function CommandCenterPage() {
     }
   };
 
-  const handleCreateGoal = async (formData: {
-    title: string;
-    type: "long-term" | "medium-term";
-    timeframe: string;
-    projectId: string | null;
-    parentGoalId: string | null;
-  }) => {
-    try {
-      const res = await apiFetch("/api/goals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: formData.title,
-          type: formData.type,
-          timeframe: formData.timeframe,
-          parentGoalId: formData.parentGoalId,
-          projectId: formData.projectId,
-          status: "not-started",
-          milestones: [],
-          tasks: [],
-        }),
-      });
-      if (!res.ok) throw new Error("Failed to create goal");
-      showSuccess("Goal created");
-      refetch();
-    } catch {
-      showError("Failed to create goal");
-    }
-  };
+
 
   const [seeding, setSeeding] = useState(false);
 
@@ -428,7 +394,7 @@ export default function CommandCenterPage() {
       </Link>
 
       {/* Stats Bar */}
-      <div role="region" aria-label="Stats overview" className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div role="region" aria-label="Stats overview" className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         <Card className="bg-card/50">
           <CardContent className="p-4 flex items-center gap-3">
             <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -468,19 +434,6 @@ export default function CommandCenterPage() {
             </div>
           </CardContent>
         </Card>
-        <Link href="/brain-dump">
-          <Card className="bg-card/50 cursor-pointer hover:border-primary/30 transition-all">
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Lightbulb className="h-4 w-4 text-primary" />
-              </div>
-              <div>
-                <p className="text-2xl font-bold tabular-nums">{stats?.unprocessedBrainDump ?? unprocessedEntries.length}</p>
-                <p className="text-xs text-muted-foreground">to process</p>
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
       </div>
 
       {/* Attention Required */}
@@ -518,11 +471,6 @@ export default function CommandCenterPage() {
         <Tip content="Create a new mission">
           <Button size="sm" variant="outline" onClick={() => setShowCreateProject(true)} className="gap-1.5">
             <Plus className="h-3.5 w-3.5" /> New Project
-          </Button>
-        </Tip>
-        <Tip content="Create a new objective">
-          <Button size="sm" variant="outline" onClick={() => setShowCreateGoal(true)} className="gap-1.5">
-            <Plus className="h-3.5 w-3.5" /> New Goal
           </Button>
         </Tip>
       </div>
@@ -721,35 +669,6 @@ export default function CommandCenterPage() {
         </Card>
       </div>
 
-      {/* Missions Section */}
-      <section role="region" aria-label="Missions">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <Sparkles className="h-4 w-4 text-primary" />
-            Missions
-          </h2>
-          <Link href="/projects" className="text-xs text-muted-foreground hover:text-foreground">
-            View all →
-          </Link>
-        </div>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.filter((p) => p.status === "active").map((project) => (
-            <ProjectCardLarge key={project.id} project={project} tasks={tasks} goals={goals} isRunning={isProjectRunning(project.id)} isMissionActive={isMissionActive(project.id)} onRun={runProject} onStop={stopProject} />
-          ))}
-          {projects.filter((p) => p.status === "active").length === 0 && (
-            <Card className="border-dashed cursor-pointer hover:border-primary/30" onClick={() => setShowCreateProject(true)}>
-              <CardContent className="p-6 flex flex-col items-center justify-center text-muted-foreground">
-                <Plus className="h-8 w-8 mb-2" />
-                <p className="text-sm">Create your first project</p>
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      </section>
-
-      {/* Outbound Pipeline Funnel */}
-      <PipelineFunnelCard />
-
       {/* Objectives Section */}
       {longTermGoals.length > 0 && (
         <section role="region" aria-label="Long-term objectives">
@@ -770,41 +689,6 @@ export default function CommandCenterPage() {
         </section>
       )}
 
-      {/* Eisenhower + Brain Dump row */}
-      <div role="region" aria-label="Eisenhower matrix and brain dump" className="grid gap-4 lg:grid-cols-2">
-        <EisenhowerSummary tasks={tasks} />
-
-        {/* Recent Brain Dump */}
-        {unprocessedEntries.length > 0 && (
-          <Link href="/brain-dump">
-            <Card className="cursor-pointer transition-all hover:shadow-lg hover:border-primary/30 h-full">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm flex items-center justify-between">
-                  Brain Dump
-                  <Badge variant="secondary" className="text-xs tabular-nums">
-                    {unprocessedEntries.length} unprocessed
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {unprocessedEntries.slice(0, 4).map((entry) => (
-                    <div key={entry.id} className="text-xs text-muted-foreground border-l-2 border-primary/30 pl-2">
-                      <p className="line-clamp-1">{entry.content}</p>
-                    </div>
-                  ))}
-                  {unprocessedEntries.length > 4 && (
-                    <p className="text-xs text-muted-foreground/60">
-                      +{unprocessedEntries.length - 4} more
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        )}
-      </div>
-
       {/* Dialogs */}
       <CreateTaskDialog
         open={showCreateTask}
@@ -817,13 +701,6 @@ export default function CommandCenterPage() {
         open={showCreateProject}
         onOpenChange={setShowCreateProject}
         onSubmit={handleCreateProject}
-      />
-      <CreateGoalDialog
-        open={showCreateGoal}
-        onOpenChange={setShowCreateGoal}
-        projects={projects}
-        goals={goals}
-        onSubmit={handleCreateGoal}
       />
     </div>
   );
