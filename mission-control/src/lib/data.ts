@@ -1,4 +1,4 @@
-import { readFile, writeFile, readdir, unlink, mkdir } from "fs/promises";
+import { readFile, writeFile, readdir, unlink, mkdir, access } from "fs/promises";
 import path from "path";
 import { Mutex } from "async-mutex";
 import type {
@@ -12,6 +12,9 @@ import type {
   AgentsFile,
   SkillsLibraryFile,
   ActiveRunsFile,
+  LeadsFile,
+  DossiersFile,
+  Conversation,
 } from "./types";
 
 const DATA_DIR = path.join(process.cwd(), "data");
@@ -168,6 +171,7 @@ const fileMutexes = {
   skillsLibrary: new Mutex(),
   activeRuns: new Mutex(),
   daemonConfig: new Mutex(),
+  conversations: new Mutex(),
 };
 
 // ─── Read functions (no locking needed — reads are safe) ──────────────────────
@@ -547,6 +551,136 @@ export async function mutateDaemonConfig<T>(fn: (data: Record<string, unknown>) 
     }
     const result = await fn(data);
     await _writeJson("daemon-config.json", data);
+    return result;
+  });
+}
+
+// ─── Conversations ─────────────────────────────────────────────────────────────
+
+export async function getConversations(): Promise<Conversation[]> {
+  try {
+    const raw = await readFile(filePath("conversations.json"), "utf-8");
+    return JSON.parse(raw) as Conversation[];
+  } catch {
+    return [];
+  }
+}
+
+export async function mutateConversations<T>(fn: (data: Conversation[]) => Promise<T>): Promise<T> {
+  return fileMutexes.conversations.runExclusive(async () => {
+    let data: Conversation[];
+    try {
+      const raw = await readFile(filePath("conversations.json"), "utf-8");
+      data = JSON.parse(raw) as Conversation[];
+    } catch {
+      data = [];
+    }
+    const result = await fn(data);
+    await _writeJson("conversations.json", data);
+    return result;
+  });
+}
+
+// ─── Project-scoped Leads (data/projects/{id}/leads.json) ─────────────────────
+
+const PROJECT_DATA_DIR = path.join(DATA_DIR, "projects");
+
+// Per-project lead mutexes to prevent concurrent write corruption
+const projectLeadsMutexes = new Map<string, Mutex>();
+
+function getProjectLeadsMutex(projectId: string): Mutex {
+  if (!projectLeadsMutexes.has(projectId)) {
+    projectLeadsMutexes.set(projectId, new Mutex());
+  }
+  return projectLeadsMutexes.get(projectId)!;
+}
+
+async function ensureProjectDir(projectId: string): Promise<string> {
+  const dir = path.join(PROJECT_DATA_DIR, projectId);
+  await mkdir(dir, { recursive: true });
+  return dir;
+}
+
+function projectLeadsPath(projectId: string): string {
+  return path.join(PROJECT_DATA_DIR, projectId, "leads.json");
+}
+
+export async function getProjectLeads(projectId: string): Promise<LeadsFile> {
+  try {
+    const raw = await readFile(projectLeadsPath(projectId), "utf-8");
+    return JSON.parse(raw) as LeadsFile;
+  } catch {
+    return { leads: [] };
+  }
+}
+
+export async function projectLeadsFileExists(projectId: string): Promise<boolean> {
+  try {
+    await access(projectLeadsPath(projectId));
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function mutateProjectLeads<T>(
+  projectId: string,
+  fn: (data: LeadsFile) => Promise<T>
+): Promise<T> {
+  return getProjectLeadsMutex(projectId).runExclusive(async () => {
+    await ensureProjectDir(projectId);
+    let data: LeadsFile;
+    try {
+      const raw = await readFile(projectLeadsPath(projectId), "utf-8");
+      data = JSON.parse(raw) as LeadsFile;
+    } catch {
+      data = { leads: [] };
+    }
+    const result = await fn(data);
+    await writeFile(projectLeadsPath(projectId), JSON.stringify(data, null, 2), "utf-8");
+    return result;
+  });
+}
+
+// ─── Project-scoped Dossiers (data/projects/{id}/dossiers.json) ───────────────
+
+const projectDossiersMutexes = new Map<string, Mutex>();
+
+function getProjectDossiersMutex(projectId: string): Mutex {
+  if (!projectDossiersMutexes.has(projectId)) {
+    projectDossiersMutexes.set(projectId, new Mutex());
+  }
+  return projectDossiersMutexes.get(projectId)!;
+}
+
+function projectDossiersPath(projectId: string): string {
+  return path.join(PROJECT_DATA_DIR, projectId, "dossiers.json");
+}
+
+export async function getProjectDossiers(projectId: string): Promise<DossiersFile> {
+  try {
+    const raw = await readFile(projectDossiersPath(projectId), "utf-8");
+    return JSON.parse(raw) as DossiersFile;
+  } catch {
+    return { dossiers: [] };
+  }
+}
+
+export async function mutateProjectDossiers<T>(
+  projectId: string,
+  fn: (data: DossiersFile) => Promise<T>
+): Promise<T> {
+  return getProjectDossiersMutex(projectId).runExclusive(async () => {
+    await ensureProjectDir(projectId);
+    let data: DossiersFile;
+    try {
+      const raw = await readFile(projectDossiersPath(projectId), "utf-8");
+      data = JSON.parse(raw) as DossiersFile;
+    } catch {
+      data = { dossiers: [] };
+    }
+    const result = await fn(data);
+    await writeFile(projectDossiersPath(projectId), JSON.stringify(data, null, 2), "utf-8");
     return result;
   });
 }

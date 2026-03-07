@@ -5,7 +5,10 @@ import { useParams } from "next/navigation";
 import {
   User, Search, Code, Megaphone, BarChart3, Send, Bot,
   Save, Plus, X, Zap, Shield, Wrench, BookOpen, Globe, Brain, Palette, HeartPulse,
+  MessageSquare,
 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { AgentChat } from "@/components/agent-chat";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
@@ -200,8 +203,30 @@ export default function TeamMemberPage() {
         </div>
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
+      {/* Tabs: Chat / Tasks / Profil */}
+      <Tabs defaultValue={agent.id === "pm-agent" ? "chat" : "tasks"} className="space-y-4">
+        <TabsList>
+          {agent.id === "pm-agent" && (
+            <TabsTrigger value="chat" className="gap-1.5">
+              <MessageSquare className="h-3.5 w-3.5" />
+              Chat
+            </TabsTrigger>
+          )}
+          <TabsTrigger value="tasks">Tasks</TabsTrigger>
+          <TabsTrigger value="profile">Profil</TabsTrigger>
+        </TabsList>
+
+        {/* Chat Tab (PM only) */}
+        {agent.id === "pm-agent" && (
+          <TabsContent value="chat">
+            <AgentChat agentId={agent.id} agentName={agent.name} />
+          </TabsContent>
+        )}
+
+        {/* Tasks Tab */}
+        <TabsContent value="tasks" className="space-y-4">
+          {/* Stats */}
+          <div className="grid grid-cols-3 gap-4">
         <Card className="bg-card/50">
           <CardContent className="p-4 text-center">
             <p className="text-2xl font-bold tabular-nums">{agentTasks.length}</p>
@@ -221,125 +246,6 @@ export default function TeamMemberPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Instructions Section */}
-      <section className="rounded-xl border bg-card/50 p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold">Instructions (System Prompt)</h2>
-          {!editingInstructions && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-xs"
-              onClick={() => { setInstructionsText(agent.instructions); setEditingInstructions(true); }}
-            >
-              Edit
-            </Button>
-          )}
-        </div>
-        {editingInstructions ? (
-          <div className="space-y-2">
-            <Textarea
-              value={instructionsText}
-              onChange={(e) => setInstructionsText(e.target.value)}
-              rows={12}
-              className="font-mono text-sm"
-            />
-            <div className="flex items-center justify-between">
-              <p className="text-xs text-muted-foreground">
-                {instructionsText.length.toLocaleString()} characters
-              </p>
-              <div className="flex gap-2">
-                <Button size="sm" variant="ghost" onClick={() => setEditingInstructions(false)}>
-                  Cancel
-                </Button>
-                <Button size="sm" onClick={handleSaveInstructions} disabled={savingProfile} className="gap-1">
-                  <Save className="h-3.5 w-3.5" /> Save
-                </Button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono bg-muted rounded-lg p-3 max-h-48 overflow-y-auto">
-            {agent.instructions || "No instructions set. Click Edit to add a system prompt."}
-          </pre>
-        )}
-      </section>
-
-      {/* Capabilities Section */}
-      <section className="rounded-xl border bg-card/50 p-4 space-y-3">
-        <h2 className="text-sm font-semibold">Capabilities</h2>
-        <div className="flex flex-wrap gap-1.5">
-          {agent.capabilities.map((cap) => (
-            <Badge key={cap} variant="secondary" className="gap-1 pr-1">
-              {cap}
-              <button
-                onClick={() => removeCapability(cap)}
-                className="rounded-full hover:bg-muted-foreground/20 p-0.5"
-              >
-                <X className="h-3 w-3" />
-              </button>
-            </Badge>
-          ))}
-          {agent.capabilities.length === 0 && (
-            <p className="text-xs text-muted-foreground">No capabilities defined.</p>
-          )}
-        </div>
-        <div className="flex gap-2">
-          <Input
-            placeholder="Add capability..."
-            value={capInput}
-            onChange={(e) => setCapInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") { e.preventDefault(); addCapability(capInput); }
-            }}
-            className="h-8 text-sm"
-          />
-          <Button size="sm" variant="outline" onClick={() => addCapability(capInput)}>
-            <Plus className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      </section>
-
-      {/* Skills Section */}
-      <section className="rounded-xl border bg-card/50 p-4 space-y-3">
-        <h2 className="text-sm font-semibold">Assigned Skills</h2>
-        {linkedSkills.length > 0 ? (
-          <div className="space-y-2">
-            {linkedSkills.map((skill) => (
-              <div key={skill.id} className="flex items-center justify-between rounded-lg border p-2.5">
-                <div>
-                  <p className="text-sm font-medium">{skill.name}</p>
-                  <p className="text-xs text-muted-foreground">{skill.description}</p>
-                </div>
-                <Button size="sm" variant="ghost" onClick={() => removeSkill(skill.id)}>
-                  <X className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-xs text-muted-foreground">No skills assigned.</p>
-        )}
-        {/* Available skills to add */}
-        {allSkills.filter((s) => !agent.skillIds.includes(s.id)).length > 0 && (
-          <div className="pt-2 border-t space-y-1">
-            <p className="text-xs text-muted-foreground">Available skills:</p>
-            <div className="flex flex-wrap gap-1.5">
-              {allSkills.filter((s) => !agent.skillIds.includes(s.id)).map((skill) => (
-                <button
-                  key={skill.id}
-                  onClick={() => addSkill(skill.id)}
-                  className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs hover:bg-primary/10 hover:border-primary/30 transition-colors"
-                >
-                  <Plus className="h-3 w-3" />
-                  {skill.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </section>
 
       {/* Task Sections */}
       {inProgress.length > 0 && (
@@ -388,55 +294,178 @@ export default function TeamMemberPage() {
         <EmptyState
           icon={Bot}
           title="No tasks assigned"
-          description={`Assign tasks to ${agent.name} from the Eisenhower or Kanban views.`}
+          description={`Assign tasks to ${agent.name} from the Daily Tasks or Status Board views.`}
         />
       )}
 
-      {/* Recent Messages */}
-      {agentMessages.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold flex items-center gap-2">
-            <Send className="h-3.5 w-3.5" />
-            Recent Messages
-          </h2>
-          <div className="space-y-2">
-            {agentMessages.map((msg) => (
-              <Card key={msg.id} className="bg-card/50">
-                <CardContent className="p-3 flex items-center gap-3">
-                  <Badge variant={msg.status === "unread" ? "default" : "secondary"} className="text-xs shrink-0">
-                    {msg.type}
-                  </Badge>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-medium truncate">{msg.subject}</p>
-                    <p className="text-xs text-muted-foreground">{msg.from} → {msg.to}</p>
-                  </div>
-                  <p className="text-xs text-muted-foreground shrink-0">
-                    {new Date(msg.createdAt).toLocaleDateString()}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Recent Activity */}
-      {agentEvents.length > 0 && (
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold flex items-center gap-2">
-            Recent Activity
-          </h2>
-          <div className="space-y-1">
-            {agentEvents.map((evt) => (
-              <div key={evt.id} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-muted-foreground">
-                <div className="h-1.5 w-1.5 rounded-full bg-primary/50 shrink-0" />
-                <span className="flex-1">{evt.summary}</span>
-                <span className="text-xs shrink-0">{new Date(evt.timestamp).toLocaleDateString()}</span>
+          {/* Recent Messages */}
+          {agentMessages.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-sm font-semibold flex items-center gap-2">
+                <Send className="h-3.5 w-3.5" />
+                Recent Messages
+              </h2>
+              <div className="space-y-2">
+                {agentMessages.map((msg) => (
+                  <Card key={msg.id} className="bg-card/50">
+                    <CardContent className="p-3 flex items-center gap-3">
+                      <Badge variant={msg.status === "unread" ? "default" : "secondary"} className="text-xs shrink-0">
+                        {msg.type}
+                      </Badge>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium truncate">{msg.subject}</p>
+                        <p className="text-xs text-muted-foreground">{msg.from} → {msg.to}</p>
+                      </div>
+                      <p className="text-xs text-muted-foreground shrink-0">
+                        {new Date(msg.createdAt).toLocaleDateString()}
+                      </p>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            </section>
+          )}
+
+          {/* Recent Activity */}
+          {agentEvents.length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-sm font-semibold flex items-center gap-2">
+                Recent Activity
+              </h2>
+              <div className="space-y-1">
+                {agentEvents.map((evt) => (
+                  <div key={evt.id} className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-muted-foreground">
+                    <div className="h-1.5 w-1.5 rounded-full bg-primary/50 shrink-0" />
+                    <span className="flex-1">{evt.summary}</span>
+                    <span className="text-xs shrink-0">{new Date(evt.timestamp).toLocaleDateString()}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </TabsContent>
+
+        {/* Profil Tab */}
+        <TabsContent value="profile" className="space-y-4">
+          {/* Instructions Section */}
+          <section className="rounded-xl border bg-card/50 p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <h2 className="text-sm font-semibold">Instructions (System Prompt)</h2>
+              {!editingInstructions && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-xs"
+                  onClick={() => { setInstructionsText(agent.instructions); setEditingInstructions(true); }}
+                >
+                  Edit
+                </Button>
+              )}
+            </div>
+            {editingInstructions ? (
+              <div className="space-y-2">
+                <Textarea
+                  value={instructionsText}
+                  onChange={(e) => setInstructionsText(e.target.value)}
+                  rows={12}
+                  className="font-mono text-sm"
+                />
+                <div className="flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground">
+                    {instructionsText.length.toLocaleString()} characters
+                  </p>
+                  <div className="flex gap-2">
+                    <Button size="sm" variant="ghost" onClick={() => setEditingInstructions(false)}>
+                      Cancel
+                    </Button>
+                    <Button size="sm" onClick={handleSaveInstructions} disabled={savingProfile} className="gap-1">
+                      <Save className="h-3.5 w-3.5" /> Save
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <pre className="text-xs text-muted-foreground whitespace-pre-wrap font-mono bg-muted rounded-lg p-3 max-h-48 overflow-y-auto">
+                {agent.instructions || "No instructions set. Click Edit to add a system prompt."}
+              </pre>
+            )}
+          </section>
+
+          {/* Capabilities Section */}
+          <section className="rounded-xl border bg-card/50 p-4 space-y-3">
+            <h2 className="text-sm font-semibold">Capabilities</h2>
+            <div className="flex flex-wrap gap-1.5">
+              {agent.capabilities.map((cap) => (
+                <Badge key={cap} variant="secondary" className="gap-1 pr-1">
+                  {cap}
+                  <button
+                    onClick={() => removeCapability(cap)}
+                    className="rounded-full hover:bg-muted-foreground/20 p-0.5"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+              {agent.capabilities.length === 0 && (
+                <p className="text-xs text-muted-foreground">No capabilities defined.</p>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Input
+                placeholder="Add capability..."
+                value={capInput}
+                onChange={(e) => setCapInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") { e.preventDefault(); addCapability(capInput); }
+                }}
+                className="h-8 text-sm"
+              />
+              <Button size="sm" variant="outline" onClick={() => addCapability(capInput)}>
+                <Plus className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </section>
+
+          {/* Skills Section */}
+          <section className="rounded-xl border bg-card/50 p-4 space-y-3">
+            <h2 className="text-sm font-semibold">Assigned Skills</h2>
+            {linkedSkills.length > 0 ? (
+              <div className="space-y-2">
+                {linkedSkills.map((skill) => (
+                  <div key={skill.id} className="flex items-center justify-between rounded-lg border p-2.5">
+                    <div>
+                      <p className="text-sm font-medium">{skill.name}</p>
+                      <p className="text-xs text-muted-foreground">{skill.description}</p>
+                    </div>
+                    <Button size="sm" variant="ghost" onClick={() => removeSkill(skill.id)}>
+                      <X className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-muted-foreground">No skills assigned.</p>
+            )}
+            {allSkills.filter((s) => !agent.skillIds.includes(s.id)).length > 0 && (
+              <div className="pt-2 border-t space-y-1">
+                <p className="text-xs text-muted-foreground">Available skills:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {allSkills.filter((s) => !agent.skillIds.includes(s.id)).map((skill) => (
+                    <button
+                      key={skill.id}
+                      onClick={() => addSkill(skill.id)}
+                      className="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs hover:bg-primary/10 hover:border-primary/30 transition-colors"
+                    >
+                      <Plus className="h-3 w-3" />
+                      {skill.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+        </TabsContent>
+      </Tabs>
 
       {/* Task Detail Panel */}
       {selectedTask && (

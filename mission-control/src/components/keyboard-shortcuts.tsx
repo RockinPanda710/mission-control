@@ -53,7 +53,7 @@ export function KeyboardShortcuts({ onCreateTask }: KeyboardShortcutsProps) {
         setGPressed(false);
         switch (e.key.toLowerCase()) {
           case "h": router.push("/"); return;
-          case "e": router.push("/priority-matrix"); return;
+          case "e": router.push("/daily-tasks"); return;
           case "k": router.push("/status-board"); return;
           case "o": router.push("/objectives"); return;
           case "b": router.push("/brain-dump"); return;

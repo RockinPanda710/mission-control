@@ -93,7 +93,7 @@ export function SearchDialog() {
     setOpen(false);
     switch (type) {
       case "task":
-        router.push("/priority-matrix");
+        router.push("/daily-tasks");
         break;
       case "project":
         router.push("/projects");
