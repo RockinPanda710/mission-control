@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import {
-  User, Search, Code, Megaphone, BarChart3, Send, Bot,
-  Save, Plus, X, Zap, Shield, Wrench, BookOpen, Globe, Brain, Palette, HeartPulse,
+  Send, Bot,
+  Save, Plus, X,
   MessageSquare,
 } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -23,17 +23,9 @@ import { useActiveRunsContext as useActiveRuns } from "@/providers/active-runs-p
 import { useFastTaskPoll } from "@/hooks/use-fast-task-poll";
 import { TaskCardSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
+import { getIconByName } from "@/lib/agent-icons";
 import type { Task } from "@/lib/types";
 import type { TaskFormData } from "@/components/task-form";
-
-const iconMap: Record<string, typeof User> = {
-  User, Search, Code, Megaphone, BarChart3, Bot, Zap,
-  Shield, Wrench, BookOpen, Globe, Brain, Palette, HeartPulse,
-};
-
-function getAgentIcon(iconName: string) {
-  return iconMap[iconName] ?? Bot;
-}
 
 export default function TeamMemberPage() {
   const params = useParams();
@@ -94,7 +86,7 @@ export default function TeamMemberPage() {
     );
   }
 
-  const Icon = getAgentIcon(agent.icon);
+  const Icon = getIconByName(agent.icon);
   const agentTasks = tasks.filter((t) => t.assignedTo === agent.id || t.collaborators?.includes(agent.id));
   const inProgress = agentTasks.filter((t) => t.kanban === "in-progress");
   const todo = agentTasks.filter((t) => t.kanban === "not-started");

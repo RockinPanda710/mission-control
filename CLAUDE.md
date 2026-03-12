@@ -1,8 +1,8 @@
-# Sales Intelligence Lab — Mission Control Operations Manual
+# Sales Intelligence Labs — Mission Control Operations Manual
 
 ## Kontext
 
-**Rene Sulski** — Gründer von **Lass mal machen (LMM)**, operiert als **Sales Intelligence Lab**.
+**Rene Sulski** — Gründer von **Lass mal machen (LMM)**, operiert als **Sales Intelligence Labs**.
 Das Lab baut kritische Vertriebsinfrastruktur für B2B-Unternehmen: CRM-Aufbau, Sales-Prozesse, Outbound-Systematik, Sales-Content. Aufgebaut in 6 Monaten, dann ist der Kunde autark.
 
 Mission Control ist das lokale Betriebssystem dafür: Aufgaben, Projekte, Agent-Orchestrierung — keine Cloud, kein Firestore, alles JSON-lokal.

@@ -2,6 +2,7 @@ import {
   User, Search, Code, Megaphone, BarChart3, Bot,
   Brain, Palette, Shield, Database, Globe, Wrench,
   BookOpen, HeartPulse, Scale, Briefcase,
+  Network, FileText, UserSearch, MessageSquare, Send, Terminal,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -23,6 +24,12 @@ const iconMap: Record<string, LucideIcon> = {
   HeartPulse,
   Scale,
   Briefcase,
+  Network,
+  FileText,
+  UserSearch,
+  MessageSquare,
+  Send,
+  Terminal,
 };
 
 /** Built-in agent ID → default icon */
@@ -32,6 +39,7 @@ const builtInAgentIcons: Record<string, LucideIcon> = {
   developer: Code,
   marketer: Megaphone,
   "business-analyst": BarChart3,
+  system: Bot,
 };
 
 /**

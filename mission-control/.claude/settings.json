@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "deny": [
+      "Write(data/agents.json)",
+      "Edit(data/agents.json)",
+      "Write(data/skills-library.json)",
+      "Edit(data/skills-library.json)",
+      "Write(data/daemon-config.json)",
+      "Edit(data/daemon-config.json)",
+      "Write(data/projects.json)",
+      "Edit(data/projects.json)",
+      "Write(scripts/**)",
+      "Edit(scripts/**)"
+    ]
+  }
+}

@@ -100,11 +100,12 @@ export function DraggableTaskCard({ task, project, onClick, isSelected, onToggle
 
 // ─── Shared drop zone / column ──────────────────────────────────────────────
 
-export function BoardColumn({ config, tasks, projects, onTaskClick, minHeight = "min-h-[280px]", maxHeight, selected, onToggleSelect, runningTaskIds, onRunTask, pendingDecisionTaskIds }: {
+export function BoardColumn({ config, tasks, projects, onTaskClick, onAddTask, minHeight = "min-h-[280px]", maxHeight, selected, onToggleSelect, runningTaskIds, onRunTask, pendingDecisionTaskIds }: {
   config: ColumnConfig;
   tasks: Task[];
   projects: Project[];
   onTaskClick: (task: Task) => void;
+  onAddTask?: (columnId: string) => void;
   minHeight?: string;
   maxHeight?: string;
   selected?: Set<string>;
@@ -137,9 +138,20 @@ export function BoardColumn({ config, tasks, projects, onTaskClick, minHeight = 
             <h2 className="text-sm font-semibold">{config.label}</h2>
           )}
         </div>
-        <Badge variant="secondary" className="text-xs tabular-nums h-5 min-w-[1.5rem] justify-center">
-          {tasks.length}
-        </Badge>
+        <div className="flex items-center gap-1.5">
+          <Badge variant="secondary" className="text-xs tabular-nums h-5 min-w-[1.5rem] justify-center">
+            {tasks.length}
+          </Badge>
+          {onAddTask && (
+            <button
+              onClick={() => onAddTask(config.id)}
+              className="h-5 w-5 rounded flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              aria-label={`Add task to ${config.label}`}
+            >
+              <Plus className="h-3.5 w-3.5" />
+            </button>
+          )}
+        </div>
       </div>
       <div className={cn("flex-1 space-y-2 p-2.5 overflow-y-auto", maxHeight)}>
         {tasks.length === 0 && (
@@ -273,6 +285,7 @@ export function BoardPanels({
   onCloseDetail,
   onCloseCreate,
   onSubmitCreate,
+  createDefaultValues,
 }: {
   tasks: Task[];
   projects: Project[];
@@ -284,6 +297,7 @@ export function BoardPanels({
   onCloseDetail: () => void;
   onCloseCreate: (open: boolean) => void;
   onSubmitCreate: (data: TaskFormData) => void;
+  createDefaultValues?: Partial<TaskFormData>;
 }) {
   return (
     <>
@@ -304,6 +318,7 @@ export function BoardPanels({
         projects={projects}
         goals={goals}
         onSubmit={onSubmitCreate}
+        defaultValues={createDefaultValues}
       />
     </>
   );

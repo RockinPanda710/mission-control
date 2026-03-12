@@ -15,5 +15,28 @@
     "linkedTaskId": null,
     "createdAt": "2026-03-07T18:11:59.030Z",
     "updatedAt": "2026-03-07T18:11:59.030Z"
+  },
+  {
+    "id": "conv_t7ZIaattXFBl",
+    "agentId": "pm-agent",
+    "status": "open",
+    "title": null,
+    "messages": [
+      {
+        "id": "msg_34MLlYpDmQFs",
+        "role": "user",
+        "content": "Hi, wie gehts dir?",
+        "timestamp": "2026-03-07T23:13:02.433Z"
+      },
+      {
+        "id": "msg_6IZdHIn3j25z",
+        "role": "user",
+        "content": "Hallo?",
+        "timestamp": "2026-03-07T23:17:22.922Z"
+      }
+    ],
+    "linkedTaskId": null,
+    "createdAt": "2026-03-07T23:13:02.433Z",
+    "updatedAt": "2026-03-07T23:17:22.922Z"
   }
 ]

@@ -26,6 +26,7 @@ import { useTasks, useGoals, useProjects, useDecisions } from "@/hooks/use-data"
 import { useActiveRunsContext as useActiveRuns } from "@/providers/active-runs-provider";
 import { useFastTaskPoll } from "@/hooks/use-fast-task-poll";
 import type { Task, KanbanStatus } from "@/lib/types";
+import type { TaskFormData } from "@/components/task-form";
 import { KanbanSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
 
@@ -47,6 +48,7 @@ export default function KanbanPage() {
     decisions.filter((d) => d.status === "pending" && d.taskId).map((d) => d.taskId as string)
   );
   const selection = useSelection();
+  const [createDefaults, setCreateDefaults] = useState<Partial<TaskFormData> | undefined>(undefined);
 
   const {
     activeTask,
@@ -79,6 +81,11 @@ export default function KanbanPage() {
     const task = tasks.find((t) => t.id === active.id);
     if (!task || task.kanban === targetStatus) return;
     await updateTask(task.id, { kanban: targetStatus });
+  }
+
+  function handleAddToColumn(columnId: string) {
+    setCreateDefaults({ kanban: columnId as KanbanStatus });
+    setShowCreateTask(true);
   }
 
   if (loading) {
@@ -135,6 +142,7 @@ export default function KanbanPage() {
               tasks={grouped[col.id as KanbanStatus]}
               projects={projects}
               onTaskClick={setSelectedTask}
+              onAddTask={handleAddToColumn}
               minHeight="min-h-[400px]"
               selected={selection.selected}
               onToggleSelect={selection.toggle}
@@ -168,8 +176,9 @@ export default function KanbanPage() {
         onUpdate={handleUpdateTask}
         onDelete={handleDeleteTask}
         onCloseDetail={() => setSelectedTask(null)}
-        onCloseCreate={setShowCreateTask}
+        onCloseCreate={(open) => { setShowCreateTask(open); if (!open) setCreateDefaults(undefined); }}
         onSubmitCreate={handleCreateTask}
+        createDefaultValues={createDefaults}
       />
     </div>
   );

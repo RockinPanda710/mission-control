@@ -6,13 +6,6 @@ import { useRouter } from "next/navigation";
 import {
   Plus,
   Users,
-  Search,
-  Code,
-  Megaphone,
-  BarChart3,
-  User,
-  Bot,
-  Zap,
   CircleDot,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,22 +17,8 @@ import { AgentCardSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
 import { Tip } from "@/components/ui/tip";
 import { cn } from "@/lib/utils";
+import { getAgentIcon } from "@/lib/agent-icons";
 import type { AgentDefinition } from "@/lib/types";
-
-// Map Lucide icon names to components
-const iconMap: Record<string, typeof User> = {
-  User,
-  Search,
-  Code,
-  Megaphone,
-  BarChart3,
-  Bot,
-  Zap,
-};
-
-function getAgentIcon(iconName: string) {
-  return iconMap[iconName] ?? Bot;
-}
 
 function AgentCard({
   agent,
@@ -48,7 +27,7 @@ function AgentCard({
   agent: AgentDefinition;
   taskCount: number;
 }) {
-  const Icon = getAgentIcon(agent.icon);
+  const Icon = getAgentIcon(agent.id, agent.icon);
   const isInactive = agent.status === "inactive";
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { Inbox, Send, User, Search, Code, Megaphone, BarChart3, Mail, MailOpen, Archive, Plus, Reply, MessageSquare, ChevronRight, ChevronDown, Loader2, Bot, Square } from "lucide-react";
+import { Inbox, Send, Mail, MailOpen, Archive, Plus, Reply, MessageSquare, ChevronRight, ChevronDown, Loader2, Bot, Square } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
@@ -15,6 +15,7 @@ import { Tip } from "@/components/ui/tip";
 import { showInfo, showError as showErrorToast } from "@/lib/toast";
 import type { AgentRole, InboxMessage, MessageType } from "@/lib/types";
 import { AGENT_ROLES } from "@/lib/types";
+import { getAgentIcon } from "@/lib/agent-icons";
 import {
   Dialog,
   DialogContent,
@@ -32,14 +33,6 @@ import {
 import { Label } from "@/components/ui/label";
 
 // ─── Constants ──────────────────────────────────────────────────────────────
-
-const agentIcons: Record<AgentRole, typeof User> = {
-  me: User,
-  researcher: Search,
-  developer: Code,
-  marketer: Megaphone,
-  "business-analyst": BarChart3,
-};
 
 const typeColors: Record<MessageType, string> = {
   delegation: "bg-blue-500/20 text-blue-400",
@@ -419,7 +412,7 @@ export default function InboxPage() {
                     {/* Participant icons */}
                     <div className="flex items-center -space-x-1">
                       {participantIds.slice(0, 3).map((pid) => {
-                        const Icon = agentIcons[pid as AgentRole] ?? User;
+                        const Icon = getAgentIcon(pid);
                         return <Icon key={pid} className="h-3.5 w-3.5 text-muted-foreground" />;
                       })}
                     </div>
@@ -469,7 +462,7 @@ export default function InboxPage() {
                     {/* Message list */}
                     <div className="space-y-0">
                       {thread.messages.map((msg, idx) => {
-                        const FromIcon = agentIcons[msg.from as AgentRole] ?? User;
+                        const FromIcon = getAgentIcon(msg.from);
                         const isLast = idx === thread.messages.length - 1;
                         return (
                           <div

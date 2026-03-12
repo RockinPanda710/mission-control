@@ -22,6 +22,21 @@
       "createdAt": "2026-03-06T15:09:37.066Z",
       "tags": [],
       "deletedAt": null
+    },
+    {
+      "id": "proj_fg-bau",
+      "name": "FG Bau",
+      "description": "Typ B CRM-Implementierung: HubSpot Setup, Sales-Prozesse, run.events Integration. 6 Monate Laufzeit.",
+      "status": "active",
+      "color": "#3b82f6",
+      "teamMembers": [
+        "me",
+        "pm-agent",
+        "coding-agent"
+      ],
+      "createdAt": "2026-03-11T10:00:00.000Z",
+      "tags": ["typ-b", "crm"],
+      "deletedAt": null
     }
   ]
 }

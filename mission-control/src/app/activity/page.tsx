@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Activity, User, Search, Code, Megaphone, BarChart3, Bot } from "lucide-react";
+import { Activity } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
@@ -11,6 +11,7 @@ import { EventRowSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
 import type { EventType, ActivityEvent } from "@/lib/types";
 import { AGENT_ROLES } from "@/lib/types";
+import { getAgentIcon } from "@/lib/agent-icons";
 import {
   Select,
   SelectContent,
@@ -18,15 +19,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const agentIcons: Record<string, typeof User> = {
-  me: User,
-  researcher: Search,
-  developer: Code,
-  marketer: Megaphone,
-  "business-analyst": BarChart3,
-  system: Bot,
-};
 
 const eventTypeLabels: Record<EventType, string> = {
   task_created: "Task Created",
@@ -156,7 +148,7 @@ export default function ActivityPage() {
           <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">{dateLabel}</h2>
           <div className="space-y-1.5">
             {dateEvents.map((evt) => {
-              const ActorIcon = agentIcons[evt.actor] ?? User;
+              const ActorIcon = getAgentIcon(evt.actor);
               const actorLabel = evt.actor === "system" ? "System" : (AGENT_ROLES.find((r) => r.id === evt.actor)?.label ?? evt.actor);
               return (
                 <Card key={evt.id} className="bg-card/50">

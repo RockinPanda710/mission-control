@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { HelpCircle, User, Search, Code, Megaphone, BarChart3, Bot } from "lucide-react";
+import { HelpCircle } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -15,15 +15,7 @@ import { showSuccess, showError } from "@/lib/toast";
 import { apiFetch } from "@/lib/api-client";
 import type { DecisionItem } from "@/lib/types";
 import { AGENT_ROLES } from "@/lib/types";
-
-const agentIcons: Record<string, typeof User> = {
-  me: User,
-  researcher: Search,
-  developer: Code,
-  marketer: Megaphone,
-  "business-analyst": BarChart3,
-  system: Bot,
-};
+import { getAgentIcon } from "@/lib/agent-icons";
 
 interface DecisionDialogProps {
   open: boolean;
@@ -38,7 +30,7 @@ export function DecisionDialog({ open, onOpenChange, decision, onAnswered }: Dec
 
   if (!decision) return null;
 
-  const RequestorIcon = agentIcons[decision.requestedBy] ?? User;
+  const RequestorIcon = getAgentIcon(decision.requestedBy);
   const requestorLabel =
     decision.requestedBy === "system"
       ? "System"

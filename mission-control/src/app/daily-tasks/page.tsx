@@ -26,6 +26,7 @@ import { useTasks, useGoals, useProjects, useAgents, useDecisions } from "@/hook
 import { useActiveRunsContext as useActiveRuns } from "@/providers/active-runs-provider";
 import { useFastTaskPoll } from "@/hooks/use-fast-task-poll";
 import type { Task, EisenhowerQuadrant } from "@/lib/types";
+import type { TaskFormData } from "@/components/task-form";
 import { getQuadrant, valuesFromQuadrant } from "@/lib/types";
 import { EisenhowerSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
@@ -51,6 +52,7 @@ export default function EisenhowerPage() {
     decisions.filter((d) => d.status === "pending" && d.taskId).map((d) => d.taskId as string)
   );
   const selection = useSelection();
+  const [createDefaults, setCreateDefaults] = useState<Partial<TaskFormData> | undefined>(undefined);
 
   const {
     activeTask,
@@ -87,6 +89,12 @@ export default function EisenhowerPage() {
     if (!task || getQuadrant(task) === targetQuadrant) return;
     const { importance, urgency } = valuesFromQuadrant(targetQuadrant);
     await updateTask(task.id, { importance, urgency });
+  }
+
+  function handleAddToQuadrant(quadrantId: string) {
+    const { importance, urgency } = valuesFromQuadrant(quadrantId as EisenhowerQuadrant);
+    setCreateDefaults({ importance, urgency });
+    setShowCreateTask(true);
   }
 
   if (loading) {
@@ -155,6 +163,7 @@ export default function EisenhowerPage() {
               tasks={grouped[q.id as EisenhowerQuadrant]}
               projects={projects}
               onTaskClick={setSelectedTask}
+              onAddTask={handleAddToQuadrant}
               maxHeight="max-h-[calc(100vh-320px)]"
               selected={selection.selected}
               onToggleSelect={selection.toggle}
@@ -188,8 +197,9 @@ export default function EisenhowerPage() {
         onUpdate={handleUpdateTask}
         onDelete={handleDeleteTask}
         onCloseDetail={() => setSelectedTask(null)}
-        onCloseCreate={setShowCreateTask}
+        onCloseCreate={(open) => { setShowCreateTask(open); if (!open) setCreateDefaults(undefined); }}
         onSubmitCreate={handleCreateTask}
+        createDefaultValues={createDefaults}
       />
     </div>
   );

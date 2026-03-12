@@ -3,9 +3,8 @@
 import { useState } from "react";
 import {
   Plus, CheckSquare, Target, FolderOpen,
-  Mail, HelpCircle, Activity, User, Search, Code, Megaphone, BarChart3,
+  Mail, HelpCircle, Activity, User,
   AlertTriangle, CircleDot, ShieldAlert, Rocket, Users, Zap, Database, Square,
-  Network, FileText, UserSearch, MessageSquare, Send, Shield, Terminal,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,13 +30,13 @@ import { DashboardSkeleton } from "@/components/skeletons";
 import { ErrorState } from "@/components/error-state";
 import { Tip } from "@/components/ui/tip";
 import { AGENT_ROLES } from "@/lib/types";
-import type { AgentRole } from "@/lib/types";
 import type { TaskFormData } from "@/components/task-form";
 import { apiFetch } from "@/lib/api-client";
 import { showSuccess, showError } from "@/lib/toast";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { getAgentIcon } from "@/lib/agent-icons";
 
 function formatRelativeTime(isoString: string): string {
   const diff = Date.now() - new Date(isoString).getTime();
@@ -49,23 +48,10 @@ function formatRelativeTime(isoString: string): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
-const agentIcons: Record<AgentRole, typeof User> = {
-  me: User,
-  researcher: Search,
-  developer: Code,
-  marketer: Megaphone,
-  "business-analyst": BarChart3,
-};
-
-// Icon lookup by string name (for dynamic agents from agents.json)
-const iconByName: Record<string, typeof User> = {
-  User, Network, Search, FileText, UserSearch, MessageSquare, Send, Shield, Terminal, Code, Megaphone, BarChart3,
-};
-
 export default function CommandCenterPage() {
   const { data, loading, error, refetch } = useDashboardData();
   const { isRunning: daemonRunning, status: daemonStatus, start: startDaemon, stop: stopDaemon } = useDaemon();
-  const { runningTaskIds, isProjectRunning, isMissionActive, runProject, stopProject } = useActiveRuns();
+  const { runningTaskIds } = useActiveRuns();
   useFastTaskPoll(runningTaskIds.size > 0, refetch);
 
   const [showCreateTask, setShowCreateTask] = useState(false);
@@ -77,7 +63,6 @@ export default function CommandCenterPage() {
   const goals = data?.goals ?? [];
   const projects = data?.projects ?? [];
   const agents = data?.agents ?? [];
-  const unprocessedEntries = data?.entries ?? [];
   const unreadMessages = data?.messages ?? [];
   const pendingDecisions = data?.decisions ?? [];
   const recentEvents = data?.recentActivity ?? [];
@@ -610,7 +595,7 @@ export default function CommandCenterPage() {
             <div className="space-y-3">
               {agentWorkload.map((agent) => {
                 const iconStr = (agent as { icon?: string }).icon;
-                const Icon: typeof User = iconStr ? (iconByName[iconStr] ?? User) : (agentIcons[agent.id as AgentRole] ?? User);
+                const Icon = getAgentIcon(agent.id, iconStr);
                 const statusIndicator =
                   agent.status === "idle" ? "bg-muted-foreground/40" :
                   agent.status === "overloaded" ? "bg-red-500" :
