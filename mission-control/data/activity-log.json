@@ -1,3 +1,103 @@
 {
-  "events": []
+  "events": [
+    {
+      "id": "evt_z7rl_zSChJ75",
+      "type": "task_completed",
+      "actor": "outreach-agent",
+      "taskId": "task_ww05_outreach",
+      "summary": "Task completed: Outreach-Nachrichten erstellen (WebWorks CH)",
+      "details": "\"Outreach-Nachrichten erstellen (WebWorks CH)\" was marked as done by outreach-agent.",
+      "timestamp": "2026-03-23T17:35:21.537Z"
+    },
+    {
+      "id": "evt_Hi9HyjnlAiOm",
+      "type": "task_updated",
+      "actor": "system",
+      "taskId": "task_ww06_lemlist",
+      "summary": "Task unblocked: Lemlist-Übergabe & Kampagnenstart",
+      "details": "All blockers resolved for \"Lemlist-Übergabe & Kampagnenstart\" after \"Outreach-Nachrichten erstellen (WebWorks CH)\" was completed.",
+      "timestamp": "2026-03-23T17:35:21.544Z"
+    },
+    {
+      "id": "evt_LrnVjedjXYQQ",
+      "type": "task_completed",
+      "actor": "system",
+      "taskId": "task_fg01_hubspot",
+      "summary": "Task completed: HubSpot CRM Setup (FG Bau)",
+      "details": "\"HubSpot CRM Setup (FG Bau)\" was marked as done by me.",
+      "timestamp": "2026-03-23T18:16:16.596Z"
+    },
+    {
+      "id": "evt_go22L2SxnSqu",
+      "type": "task_completed",
+      "actor": "contact-agent",
+      "taskId": "task_ww04_contacts",
+      "summary": "Task completed: Ansprechpartner finden (WebWorks CH)",
+      "details": "\"Ansprechpartner finden (WebWorks CH)\" was marked as done by contact-agent.",
+      "timestamp": "2026-03-23T18:33:46.205Z"
+    },
+    {
+      "id": "evt_ed1s-nxvSoQG",
+      "type": "task_updated",
+      "actor": "system",
+      "taskId": "task_ww04b_enrichment",
+      "summary": "Task unblocked: People Enrichment — LinkedIn-URLs (PFLICHT)",
+      "details": "All blockers resolved for \"People Enrichment — LinkedIn-URLs (PFLICHT)\" after \"Ansprechpartner finden (WebWorks CH)\" was completed.",
+      "timestamp": "2026-03-23T18:33:46.209Z"
+    },
+    {
+      "id": "evt_pi6OuZijVxV4",
+      "type": "task_completed",
+      "actor": "contact-agent",
+      "taskId": "task_ww04b_enrichment",
+      "summary": "Task completed: People Enrichment — LinkedIn-URLs (PFLICHT)",
+      "details": "\"People Enrichment — LinkedIn-URLs (PFLICHT)\" was marked as done by contact-agent.",
+      "timestamp": "2026-03-23T18:33:48.324Z"
+    },
+    {
+      "id": "evt_nVQPhM8iHLwa",
+      "type": "task_updated",
+      "actor": "system",
+      "taskId": "task_ww05_outreach",
+      "summary": "Task unblocked: Outreach-Nachrichten erstellen (WebWorks CH)",
+      "details": "All blockers resolved for \"Outreach-Nachrichten erstellen (WebWorks CH)\" after \"People Enrichment — LinkedIn-URLs (PFLICHT)\" was completed.",
+      "timestamp": "2026-03-23T18:33:48.330Z"
+    },
+    {
+      "id": "evt_9llk5g57Eir5",
+      "type": "task_completed",
+      "actor": "pipeline-agent",
+      "taskId": "task_raid_lemlist",
+      "summary": "Task completed: RAID EnforceTac — Lemlist-Import vorbereiten",
+      "details": "\"RAID EnforceTac — Lemlist-Import vorbereiten\" was marked as done by pipeline-agent.",
+      "timestamp": "2026-03-23T18:34:01.083Z"
+    },
+    {
+      "id": "evt_zbiaQMUvKATJ",
+      "type": "task_completed",
+      "actor": "campaign-agent",
+      "taskId": "task_ww06_lemlist",
+      "summary": "Task completed: Lemlist-Übergabe & Kampagnenstart",
+      "details": "\"Lemlist-Übergabe & Kampagnenstart\" was marked as done by campaign-agent.",
+      "timestamp": "2026-03-23T18:34:01.084Z"
+    },
+    {
+      "id": "evt_Ujmtlb1ROFZt",
+      "type": "task_completed",
+      "actor": "outreach-agent",
+      "taskId": "task_ww05_outreach",
+      "summary": "Task completed: Outreach-Nachrichten erstellen (WebWorks CH)",
+      "details": "\"Outreach-Nachrichten erstellen (WebWorks CH)\" was marked as done by outreach-agent.",
+      "timestamp": "2026-03-23T18:34:01.084Z"
+    },
+    {
+      "id": "evt_HZ6zg1G8u3Me",
+      "type": "task_completed",
+      "actor": "outreach-agent",
+      "taskId": "task_wwde_outreach",
+      "summary": "Task completed: WebWorks DE — Outreach kalibrieren + Batch-Generierung",
+      "details": "\"WebWorks DE — Outreach kalibrieren + Batch-Generierung\" was marked as done by outreach-agent.",
+      "timestamp": "2026-03-23T18:34:01.092Z"
+    }
+  ]
 }

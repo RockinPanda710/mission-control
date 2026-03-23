@@ -1,3 +1,124 @@
 {
-  "messages": []
+  "messages": [
+    {
+      "id": "msg_0WXNRZrH3ZeP",
+      "from": "outreach-agent",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_ww05_outreach",
+      "subject": "Completed: Outreach-Nachrichten erstellen (WebWorks CH)",
+      "body": "Task \"Outreach-Nachrichten erstellen (WebWorks CH)\" has been completed.\n\nNo additional notes.",
+      "status": "unread",
+      "createdAt": "2026-03-23T17:35:21.538Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_Ka5m5fyT3UPp",
+      "from": "system",
+      "to": "campaign-agent",
+      "type": "update",
+      "taskId": "task_ww06_lemlist",
+      "subject": "Unblocked: Lemlist-Übergabe & Kampagnenstart",
+      "body": "All dependencies for \"Lemlist-Übergabe & Kampagnenstart\" have been resolved. This task is now ready to work on.",
+      "status": "unread",
+      "createdAt": "2026-03-23T17:35:21.541Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_7TOQwudtNxCL",
+      "from": "contact-agent",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_ww04_contacts",
+      "subject": "Completed: Ansprechpartner finden (WebWorks CH)",
+      "body": "Task \"Ansprechpartner finden (WebWorks CH)\" has been completed.\n\nAktueller Schritt. Apollo People Search läuft, LinkedIn Enrichment ausstehend.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:33:46.206Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_yaMIf53CbI2_",
+      "from": "system",
+      "to": "contact-agent",
+      "type": "update",
+      "taskId": "task_ww04b_enrichment",
+      "subject": "Unblocked: People Enrichment — LinkedIn-URLs (PFLICHT)",
+      "body": "All dependencies for \"People Enrichment — LinkedIn-URLs (PFLICHT)\" have been resolved. This task is now ready to work on.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:33:46.209Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_-exMGoI46h8B",
+      "from": "contact-agent",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_ww04b_enrichment",
+      "subject": "Completed: People Enrichment — LinkedIn-URLs (PFLICHT)",
+      "body": "Task \"People Enrichment — LinkedIn-URLs (PFLICHT)\" has been completed.\n\nPFLICHT vor Lemlist-Übergabe. Lesson Learned: Ohne People Enrichment hat Lemlist nur Firmen-URLs.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:33:48.326Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_jRxSghuiXXmP",
+      "from": "system",
+      "to": "outreach-agent",
+      "type": "update",
+      "taskId": "task_ww05_outreach",
+      "subject": "Unblocked: Outreach-Nachrichten erstellen (WebWorks CH)",
+      "body": "All dependencies for \"Outreach-Nachrichten erstellen (WebWorks CH)\" have been resolved. This task is now ready to work on.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:33:48.329Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_ySKNT55MJVvS",
+      "from": "pipeline-agent",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_raid_lemlist",
+      "subject": "Completed: RAID EnforceTac — Lemlist-Import vorbereiten",
+      "body": "Task \"RAID EnforceTac — Lemlist-Import vorbereiten\" has been completed.\n\nLeads, Kontakte, Dossiers und Outreach-Nachrichten sind fertig.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:34:01.084Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_kax9nLx0ssNo",
+      "from": "campaign-agent",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_ww06_lemlist",
+      "subject": "Completed: Lemlist-Übergabe & Kampagnenstart",
+      "body": "Task \"Lemlist-Übergabe & Kampagnenstart\" has been completed.\n\nStartet immer PAUSED. Rene gibt frei.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:34:01.085Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_IYDIWCdeXGFv",
+      "from": "outreach-agent",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_ww05_outreach",
+      "subject": "Completed: Outreach-Nachrichten erstellen (WebWorks CH)",
+      "body": "Task \"Outreach-Nachrichten erstellen (WebWorks CH)\" has been completed.\n\nNo additional notes.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:34:01.092Z",
+      "readAt": null
+    },
+    {
+      "id": "msg_9x_stSKEslw0",
+      "from": "outreach-agent",
+      "to": "me",
+      "type": "report",
+      "taskId": "task_wwde_outreach",
+      "subject": "Completed: WebWorks DE — Outreach kalibrieren + Batch-Generierung",
+      "body": "Task \"WebWorks DE — Outreach kalibrieren + Batch-Generierung\" has been completed.\n\nDossiers und Kontakte existieren bereits. Outreach ist der naechste Schritt.",
+      "status": "unread",
+      "createdAt": "2026-03-23T18:34:01.093Z",
+      "readAt": null
+    }
+  ]
 }

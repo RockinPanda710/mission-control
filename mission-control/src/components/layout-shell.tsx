@@ -20,11 +20,19 @@ interface LayoutShellProps {
   children: React.ReactNode;
 }
 
+// Routes that render in standalone mode (no sidebar, no command bar, full-width)
+const STANDALONE_ROUTES = ["/today"];
+
+function isStandaloneRoute(pathname: string): boolean {
+  return STANDALONE_ROUTES.some((r) => pathname === r || pathname.startsWith(r + "/"));
+}
+
 export function LayoutShell({ children }: LayoutShellProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const standalone = isStandaloneRoute(pathname);
   const { tasks, agents, unreadInbox, pendingDecisions } = useSidebar();
   const { online } = useConnection();
 
@@ -64,6 +72,20 @@ export function LayoutShell({ children }: LayoutShellProps) {
       showError("Failed to capture entry");
     }
   }, []);
+
+  // Standalone mode: no sidebar, no command bar, full-width content
+  // Background is controlled by the nested layout (e.g. SIL theme for /today)
+  if (standalone) {
+    return (
+      <TooltipProvider delayDuration={300}>
+        <div className="min-h-screen">
+          <main id="main-content" className="min-h-screen">
+            <ActiveRunsProvider>{children}</ActiveRunsProvider>
+          </main>
+        </div>
+      </TooltipProvider>
+    );
+  }
 
   return (
     <TooltipProvider delayDuration={300}>

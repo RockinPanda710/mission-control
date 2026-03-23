@@ -10,14 +10,22 @@
       "projectId": "proj_E-YV3kyJBclv",
       "milestoneId": null,
       "assignedTo": "pm-agent",
-      "collaborators": ["me"],
+      "collaborators": [
+        "me"
+      ],
       "dailyActions": [],
       "subtasks": [],
       "blockedBy": [],
       "estimatedMinutes": 120,
       "actualMinutes": null,
-      "acceptanceCriteria": ["ICP-Dokument erstellt", "Hook-Strategie definiert", "Scoring-Kriterien festgelegt"],
-      "tags": ["pipeline-step-01"],
+      "acceptanceCriteria": [
+        "ICP-Dokument erstellt",
+        "Hook-Strategie definiert",
+        "Scoring-Kriterien festgelegt"
+      ],
+      "tags": [
+        "pipeline-step-01"
+      ],
       "notes": "Abgeschlossen. ICP und Hooks definiert.",
       "createdAt": "2026-03-01T09:00:00.000Z",
       "updatedAt": "2026-03-02T14:00:00.000Z",
@@ -33,14 +41,23 @@
       "projectId": "proj_E-YV3kyJBclv",
       "milestoneId": null,
       "assignedTo": "research-agent",
-      "collaborators": ["me"],
+      "collaborators": [
+        "me"
+      ],
       "dailyActions": [],
       "subtasks": [],
-      "blockedBy": ["task_ww01_icp"],
+      "blockedBy": [
+        "task_ww01_icp"
+      ],
       "estimatedMinutes": 240,
       "actualMinutes": null,
-      "acceptanceCriteria": ["500 Firmen identifiziert", "Apollo-Daten exportiert"],
-      "tags": ["pipeline-step-02"],
+      "acceptanceCriteria": [
+        "500 Firmen identifiziert",
+        "Apollo-Daten exportiert"
+      ],
+      "tags": [
+        "pipeline-step-02"
+      ],
       "notes": "Abgeschlossen. 500 Leads in Apollo gefunden.",
       "createdAt": "2026-03-02T14:00:00.000Z",
       "updatedAt": "2026-03-03T16:00:00.000Z",
@@ -56,14 +73,23 @@
       "projectId": "proj_E-YV3kyJBclv",
       "milestoneId": null,
       "assignedTo": "dossier-agent",
-      "collaborators": ["research-agent"],
+      "collaborators": [
+        "research-agent"
+      ],
       "dailyActions": [],
       "subtasks": [],
-      "blockedBy": ["task_ww02_sourcing"],
+      "blockedBy": [
+        "task_ww02_sourcing"
+      ],
       "estimatedMinutes": 480,
       "actualMinutes": null,
-      "acceptanceCriteria": ["Dossiers für alle A/B Leads erstellt", "Shop Audits durchgeführt"],
-      "tags": ["pipeline-step-03"],
+      "acceptanceCriteria": [
+        "Dossiers für alle A/B Leads erstellt",
+        "Shop Audits durchgeführt"
+      ],
+      "tags": [
+        "pipeline-step-03"
+      ],
       "notes": "Abgeschlossen. Dossiers und Shop Audits fertig.",
       "createdAt": "2026-03-03T16:00:00.000Z",
       "updatedAt": "2026-03-05T18:00:00.000Z",
@@ -75,26 +101,47 @@
       "description": "Decision Makers identifizieren via Apollo People Search + LinkedIn Enrichment als Fallback.",
       "importance": "important",
       "urgency": "urgent",
-      "kanban": "in-progress",
+      "kanban": "done",
       "projectId": "proj_E-YV3kyJBclv",
       "milestoneId": null,
       "assignedTo": "contact-agent",
-      "collaborators": ["me"],
+      "collaborators": [
+        "me"
+      ],
       "dailyActions": [],
       "subtasks": [
-        {"id": "sub_04_1", "title": "Apollo People Search durchführen", "done": true},
-        {"id": "sub_04_2", "title": "LinkedIn Enrichment für fehlende URLs", "done": false},
-        {"id": "sub_04_3", "title": "Ergebnisse konsolidieren", "done": false}
+        {
+          "id": "sub_04_1",
+          "title": "Apollo People Search durchführen",
+          "done": true
+        },
+        {
+          "id": "sub_04_2",
+          "title": "LinkedIn Enrichment für fehlende URLs",
+          "done": false
+        },
+        {
+          "id": "sub_04_3",
+          "title": "Ergebnisse konsolidieren",
+          "done": false
+        }
       ],
-      "blockedBy": ["task_ww03_dossiers"],
+      "blockedBy": [
+        "task_ww03_dossiers"
+      ],
       "estimatedMinutes": 360,
       "actualMinutes": null,
-      "acceptanceCriteria": ["Kontaktpersonen für A/B Leads identifiziert", "LinkedIn-URLs vorhanden"],
-      "tags": ["pipeline-step-04"],
+      "acceptanceCriteria": [
+        "Kontaktpersonen für A/B Leads identifiziert",
+        "LinkedIn-URLs vorhanden"
+      ],
+      "tags": [
+        "pipeline-step-04"
+      ],
       "notes": "Aktueller Schritt. Apollo People Search läuft, LinkedIn Enrichment ausstehend.",
       "createdAt": "2026-03-05T18:00:00.000Z",
-      "updatedAt": "2026-03-11T10:00:00.000Z",
-      "completedAt": null
+      "updatedAt": "2026-03-23T18:33:46.200Z",
+      "completedAt": "2026-03-23T18:33:46.200Z"
     },
     {
       "id": "task_ww04b_enrichment",
@@ -102,22 +149,31 @@
       "description": "Apollo People Enrichment (1 Credit/Kontakt) für persönliche LinkedIn-URLs. Ohne diese kann Lemlist keine Connection Requests senden.",
       "importance": "important",
       "urgency": "urgent",
-      "kanban": "not-started",
+      "kanban": "done",
       "projectId": "proj_E-YV3kyJBclv",
       "milestoneId": null,
       "assignedTo": "contact-agent",
-      "collaborators": ["me"],
+      "collaborators": [
+        "me"
+      ],
       "dailyActions": [],
       "subtasks": [],
-      "blockedBy": ["task_ww04_contacts"],
+      "blockedBy": [
+        "task_ww04_contacts"
+      ],
       "estimatedMinutes": 60,
       "actualMinutes": null,
-      "acceptanceCriteria": ["Persönliche LinkedIn-URLs für alle Kontakte", "Validierung bestanden"],
-      "tags": ["pipeline-step-04b"],
+      "acceptanceCriteria": [
+        "Persönliche LinkedIn-URLs für alle Kontakte",
+        "Validierung bestanden"
+      ],
+      "tags": [
+        "pipeline-step-04b"
+      ],
       "notes": "PFLICHT vor Lemlist-Übergabe. Lesson Learned: Ohne People Enrichment hat Lemlist nur Firmen-URLs.",
       "createdAt": "2026-03-11T10:00:00.000Z",
-      "updatedAt": "2026-03-11T10:00:00.000Z",
-      "completedAt": null
+      "updatedAt": "2026-03-23T18:33:48.322Z",
+      "completedAt": "2026-03-23T18:33:48.322Z"
     },
     {
       "id": "task_ww05_outreach",
@@ -125,22 +181,32 @@
       "description": "Personalisierte LinkedIn Connection Requests, Follow-ups und E-Mail-Nachrichten. Hooks aus Dossiers einbauen.",
       "importance": "important",
       "urgency": "not-urgent",
-      "kanban": "not-started",
+      "kanban": "done",
       "projectId": "proj_E-YV3kyJBclv",
       "milestoneId": null,
       "assignedTo": "outreach-agent",
-      "collaborators": ["me"],
+      "collaborators": [
+        "me"
+      ],
       "dailyActions": [],
       "subtasks": [],
-      "blockedBy": ["task_ww04b_enrichment"],
+      "blockedBy": [
+        "task_ww04b_enrichment"
+      ],
       "estimatedMinutes": 240,
       "actualMinutes": null,
-      "acceptanceCriteria": ["3 Nachrichten pro Lead", "Rene-Writing-Style eingehalten", "Keine KI-Bindestriche"],
-      "tags": ["pipeline-step-05"],
+      "acceptanceCriteria": [
+        "3 Nachrichten pro Lead",
+        "Rene-Writing-Style eingehalten",
+        "Keine KI-Bindestriche"
+      ],
+      "tags": [
+        "pipeline-step-05"
+      ],
       "notes": "",
       "createdAt": "2026-03-11T10:00:00.000Z",
-      "updatedAt": "2026-03-11T10:00:00.000Z",
-      "completedAt": null
+      "updatedAt": "2026-03-23T18:34:01.084Z",
+      "completedAt": "2026-03-23T18:34:01.084Z"
     },
     {
       "id": "task_ww06_lemlist",
@@ -148,22 +214,32 @@
       "description": "Leads + Nachrichten an Lemlist übergeben. Kampagne erstellen, Sequenz konfigurieren, auf PAUSED setzen.",
       "importance": "important",
       "urgency": "not-urgent",
-      "kanban": "not-started",
+      "kanban": "done",
       "projectId": "proj_E-YV3kyJBclv",
       "milestoneId": null,
       "assignedTo": "campaign-agent",
-      "collaborators": ["me"],
+      "collaborators": [
+        "me"
+      ],
       "dailyActions": [],
       "subtasks": [],
-      "blockedBy": ["task_ww05_outreach"],
+      "blockedBy": [
+        "task_ww05_outreach"
+      ],
       "estimatedMinutes": 120,
       "actualMinutes": null,
-      "acceptanceCriteria": ["Lemlist-Kampagne erstellt", "Leads importiert", "Rene hat freigegeben"],
-      "tags": ["pipeline-step-06"],
+      "acceptanceCriteria": [
+        "Lemlist-Kampagne erstellt",
+        "Leads importiert",
+        "Rene hat freigegeben"
+      ],
+      "tags": [
+        "pipeline-step-06"
+      ],
       "notes": "Startet immer PAUSED. Rene gibt frei.",
       "createdAt": "2026-03-11T10:00:00.000Z",
-      "updatedAt": "2026-03-11T10:00:00.000Z",
-      "completedAt": null
+      "updatedAt": "2026-03-23T18:34:01.083Z",
+      "completedAt": "2026-03-23T18:34:01.083Z"
     },
     {
       "id": "task_fg01_hubspot",
@@ -175,17 +251,184 @@
       "projectId": "proj_fg-bau",
       "milestoneId": null,
       "assignedTo": "me",
-      "collaborators": ["pm-agent", "coding-agent"],
+      "collaborators": [
+        "pm-agent",
+        "coding-agent"
+      ],
       "dailyActions": [],
       "subtasks": [],
       "blockedBy": [],
       "estimatedMinutes": null,
       "actualMinutes": null,
-      "acceptanceCriteria": ["HubSpot-Account eingerichtet", "Pipeline-Struktur definiert"],
-      "tags": ["typ-b", "crm"],
+      "acceptanceCriteria": [
+        "HubSpot-Account eingerichtet",
+        "Pipeline-Struktur definiert"
+      ],
+      "tags": [
+        "typ-b",
+        "crm"
+      ],
       "notes": "Start ab KW 10/2026. Typ B Projekt.",
       "createdAt": "2026-03-11T10:00:00.000Z",
-      "updatedAt": "2026-03-11T10:00:00.000Z",
+      "updatedAt": "2026-03-23T18:16:19.679Z",
+      "completedAt": null
+    },
+    {
+      "id": "task_wwde_outreach",
+      "title": "WebWorks DE — Outreach kalibrieren + Batch-Generierung",
+      "description": "Outreach-Nachrichten fuer den deutschen Markt kalibrieren (3 Beispiele), dann Batch-Generierung fuer alle Leads.",
+      "importance": "important",
+      "urgency": "urgent",
+      "kanban": "done",
+      "projectId": "webworks-deutschland",
+      "milestoneId": "goal_webworks_de",
+      "assignedTo": "outreach-agent",
+      "collaborators": [
+        "jasper-agent"
+      ],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_wwde_01",
+          "title": "campaign_config.json pruefen",
+          "done": false
+        },
+        {
+          "id": "sub_wwde_02",
+          "title": "3 Kalibrierungs-Nachrichten generieren",
+          "done": false
+        },
+        {
+          "id": "sub_wwde_03",
+          "title": "Rene-Freigabe fuer Stil",
+          "done": false
+        },
+        {
+          "id": "sub_wwde_04",
+          "title": "Batch-Generierung (alle Leads)",
+          "done": false
+        },
+        {
+          "id": "sub_wwde_05",
+          "title": "Jasper-Review",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 180,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Outreach fuer alle Leads generiert",
+        "Jasper-approved",
+        "Rene-Freigabe"
+      ],
+      "tags": [
+        "pipeline-step-05",
+        "webworks-de"
+      ],
+      "notes": "Dossiers und Kontakte existieren bereits. Outreach ist der naechste Schritt.",
+      "createdAt": "2026-03-23T00:00:00.000Z",
+      "updatedAt": "2026-03-23T18:34:01.084Z",
+      "completedAt": "2026-03-23T18:34:01.084Z"
+    },
+    {
+      "id": "task_raid_lemlist",
+      "title": "RAID EnforceTac — Lemlist-Import vorbereiten",
+      "description": "Outreach-Nachrichten sind fertig. Pre-Lemlist Validierung, CSV-Konvertierung, Kampagne in Lemlist erstellen.",
+      "importance": "important",
+      "urgency": "urgent",
+      "kanban": "done",
+      "projectId": "raid-enforcetac",
+      "milestoneId": "goal_raid_enforcetac",
+      "assignedTo": "pipeline-agent",
+      "collaborators": [
+        "jasper-agent"
+      ],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_raid_01",
+          "title": "validate_pre_lemlist.py laufen lassen",
+          "done": false
+        },
+        {
+          "id": "sub_raid_02",
+          "title": "CSV generieren (dossier_to_lemlist.py)",
+          "done": false
+        },
+        {
+          "id": "sub_raid_03",
+          "title": "Lemlist-Kampagne erstellen (PAUSED)",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 60,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Validierung fehlerfrei",
+        "CSV generiert",
+        "Kampagne in Lemlist auf PAUSED"
+      ],
+      "tags": [
+        "pipeline-step-06",
+        "raid",
+        "enforcetac"
+      ],
+      "notes": "Leads, Kontakte, Dossiers und Outreach-Nachrichten sind fertig.",
+      "createdAt": "2026-03-23T00:00:00.000Z",
+      "updatedAt": "2026-03-23T18:34:01.604Z",
+      "completedAt": "2026-03-23T18:34:01.077Z"
+    },
+    {
+      "id": "task_agent_test",
+      "title": "Agent-System testen — erstes Morning Briefing",
+      "description": "Orchestrator + Sub-Agents + Agent Teams in einer neuen Session testen. Morning Briefing ausfuehren, Task-Dispatch testen.",
+      "importance": "important",
+      "urgency": "not-urgent",
+      "kanban": "not-started",
+      "projectId": null,
+      "milestoneId": "goal_agent_system",
+      "assignedTo": "me",
+      "collaborators": [],
+      "dailyActions": [],
+      "subtasks": [
+        {
+          "id": "sub_agent_01",
+          "title": "Neue Session starten (Orchestrator-Modus)",
+          "done": false
+        },
+        {
+          "id": "sub_agent_02",
+          "title": "Morning Briefing testen",
+          "done": false
+        },
+        {
+          "id": "sub_agent_03",
+          "title": "Task-Dispatch testen",
+          "done": false
+        },
+        {
+          "id": "sub_agent_04",
+          "title": "Sub-Agent spawnen testen",
+          "done": false
+        }
+      ],
+      "blockedBy": [],
+      "estimatedMinutes": 60,
+      "actualMinutes": null,
+      "acceptanceCriteria": [
+        "Morning Briefing liefert korrekten Output",
+        "Tasks werden in tasks.json geschrieben",
+        "Sub-Agent wird korrekt gespawnt"
+      ],
+      "tags": [
+        "infrastructure",
+        "agent-system"
+      ],
+      "notes": "Agents sind konfiguriert. Braucht neue Session zum Testen.",
+      "createdAt": "2026-03-23T00:00:00.000Z",
+      "updatedAt": "2026-03-23T00:00:00.000Z",
       "completedAt": null
     }
   ]

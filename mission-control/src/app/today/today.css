@@ -1,0 +1,381 @@
+/* ─── SI Labs Design System — Today Dashboard ────────────────────────────── */
+/* Scoped to .sil-theme. Dashboard-optimized: clarity over flair.            */
+
+.sil-theme {
+  --sil-accent: #0EA5E9;
+  --sil-accent-hover: #0284C7;
+  --sil-indigo: #6366F1;
+  --sil-success: #10B981;
+  --sil-warning: #D97706;
+  --sil-error: #DC2626;
+  --sil-text: #1a1a1a;
+  --sil-text-muted: #555555;
+  --sil-text-subtle: #999999;
+  --sil-border: rgba(0, 0, 0, 0.08);
+  --sil-gradient-brand: linear-gradient(135deg, #0EA5E9, #6366F1);
+  color: var(--sil-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Background ──────────────────────────────────────────────────────────── */
+
+.sil-bg {
+  position: relative;
+  min-height: 100vh;
+  background: linear-gradient(160deg, #f4f8fc 0%, #f7f5fb 50%, #f2f7fc 100%);
+}
+
+.sil-bg::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 40% at 15% 15%, rgba(14, 165, 233, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 35% at 85% 25%, rgba(99, 102, 241, 0.04) 0%, transparent 50%);
+}
+
+.sil-bg > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Panels (primary container) ──────────────────────────────────────────── */
+
+.sil-panel {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+/* ─── Section Dividers ────────────────────────────────────────────────────── */
+
+.sil-divider {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.06);
+  margin: 0 20px;
+}
+
+/* ─── Section Headers ─────────────────────────────────────────────────────── */
+
+.sil-section-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--sil-text-subtle);
+}
+
+.sil-count-badge {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 9999px;
+  background: rgba(14, 165, 233, 0.08);
+  color: var(--sil-accent);
+  font-family: var(--font-mono);
+}
+
+/* ─── Header Bar ──────────────────────────────────────────────────────────── */
+
+.sil-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+}
+
+/* ─── Typography ──────────────────────────────────────────────────────────── */
+
+.sil-overline {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--sil-accent);
+}
+
+.sil-heading {
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--sil-text);
+}
+
+.sil-stat-number {
+  font-weight: 700;
+  color: var(--sil-text);
+}
+
+/* ─── Colors ──────────────────────────────────────────────────────────────── */
+
+.sil-text { color: var(--sil-text); }
+.sil-text-muted { color: var(--sil-text-muted); }
+.sil-text-subtle { color: var(--sil-text-subtle); }
+.sil-text-accent { color: var(--sil-accent); }
+
+/* ─── Task Items ──────────────────────────────────────────────────────────── */
+
+.sil-task-item {
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.sil-task-item:hover {
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.sil-checkbox {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(0, 0, 0, 0.18);
+  transition: border-color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.sil-checkbox:hover,
+.sil-task-item:hover .sil-checkbox {
+  border-color: var(--sil-accent);
+}
+
+.sil-checkbox-done {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* ─── Campaign Link (interactive — gets hover glow) ───────────────────────── */
+
+.sil-campaign-link {
+  display: block;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.3s ease;
+}
+
+.sil-campaign-link:hover {
+  background: rgba(14, 165, 233, 0.04);
+  border-color: rgba(14, 165, 233, 0.15);
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.08);
+}
+
+/* ─── Quick Add ───────────────────────────────────────────────────────────── */
+
+.sil-quick-add {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  transition: background 0.2s ease;
+}
+
+.sil-quick-add:focus-within {
+  background: rgba(14, 165, 233, 0.02);
+}
+
+.sil-quick-add input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-size: 0.875rem;
+  color: var(--sil-text);
+}
+
+.sil-quick-add input::placeholder {
+  color: var(--sil-text-subtle);
+}
+
+/* ─── Completed Strip ─────────────────────────────────────────────────────── */
+
+.sil-completed-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px 16px;
+  margin-top: 16px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.04);
+  border: 1px solid rgba(16, 185, 129, 0.1);
+}
+
+.sil-completed-strip .sil-completed-item {
+  font-size: 0.75rem;
+  color: var(--sil-text-muted);
+  text-decoration: line-through;
+}
+
+/* ─── Badges ──────────────────────────────────────────────────────────────── */
+
+.sil-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 9999px;
+}
+
+.sil-badge-warning {
+  background: rgba(245, 158, 11, 0.08);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.18);
+}
+
+.sil-badge-critical {
+  background: rgba(239, 68, 68, 0.08);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+}
+
+/* ─── Stat Card (campaign detail) ─────────────────────────────────────────── */
+
+.sil-stat-card {
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 12px;
+}
+
+/* ─── Spinner ─────────────────────────────────────────────────────────────── */
+
+.sil-spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 9999px;
+  border: 2px solid rgba(14, 165, 233, 0.15);
+  border-top-color: var(--sil-accent);
+  animation: sil-spin 0.8s linear infinite;
+}
+
+@keyframes sil-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Gradient Text ───────────────────────────────────────────────────────── */
+
+.sil-gradient-text {
+  background: linear-gradient(135deg, #0EA5E9, #6366F1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Hero Header ─────────────────────────────────────────────────────────── */
+
+.sil-hero {
+  text-align: center;
+  padding: 28px 20px 20px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px) saturate(1.2);
+  -webkit-backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 16px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03), 0 4px 16px rgba(14, 165, 233, 0.04);
+}
+
+/* ─── Stat Pills ──────────────────────────────────────────────────────────── */
+
+.sil-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  padding: 4px 12px;
+  border-radius: 9999px;
+  background: rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* ─── Section Dot ─────────────────────────────────────────────────────────── */
+
+.sil-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  flex-shrink: 0;
+}
+
+/* ─── Entrance Animations ─────────────────────────────────────────────────── */
+
+@keyframes sil-fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.sil-animate {
+  animation: sil-fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.sil-delay-1 { animation-delay: 0ms; }
+.sil-delay-2 { animation-delay: 80ms; }
+.sil-delay-3 { animation-delay: 160ms; }
+.sil-delay-4 { animation-delay: 240ms; }
+.sil-delay-5 { animation-delay: 320ms; }
+
+/* ─── Progress Ring ───────────────────────────────────────────────────────── */
+
+.sil-progress-ring circle {
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ─── Campaign Link (gradient border on hover) ────────────────────────────── */
+
+.sil-campaign-link:hover {
+  background: rgba(14, 165, 233, 0.03);
+  border-color: transparent;
+  background-clip: padding-box;
+  box-shadow:
+    0 0 0 1px rgba(14, 165, 233, 0.2),
+    0 4px 16px rgba(14, 165, 233, 0.06),
+    0 2px 4px rgba(99, 102, 241, 0.04);
+}
+
+/* ─── Check Hint on Task Hover ────────────────────────────────────────────── */
+
+.sil-check-hint {
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.sil-task-item:hover .sil-check-hint {
+  opacity: 1;
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+
+.sil-theme ::-webkit-scrollbar { width: 5px; }
+.sil-theme ::-webkit-scrollbar-track { background: transparent; }
+.sil-theme ::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.08); border-radius: 3px; }
+.sil-theme ::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.15); }
+
+/* ─── Reduced Motion ──────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .sil-animate {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

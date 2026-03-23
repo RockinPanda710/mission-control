@@ -164,6 +164,8 @@ describe("buildSafeEnv", () => {
       "PATH", "Path", "HOME", "USERPROFILE", "APPDATA", "LOCALAPPDATA", "TEMP", "TMP",
       // Windows system vars (only present on win32)
       "SystemRoot", "SYSTEMROOT", "WINDIR", "COMSPEC", "PATHEXT",
+      // Claude Code authentication
+      "ANTHROPIC_API_KEY", "CLAUDE_CODE_OAUTH_TOKEN",
       // Agent Teams flag
       "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS",
     ];

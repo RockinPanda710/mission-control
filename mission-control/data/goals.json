@@ -1,3 +1,52 @@
 {
-  "goals": []
+  "goals": [
+    {
+      "id": "goal_webworks_de",
+      "title": "WebWorks Deutschland Outbound-Kampagne live in Lemlist",
+      "type": "medium-term",
+      "timeframe": "2026-04-15",
+      "parentGoalId": null,
+      "projectId": "webworks-deutschland",
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [],
+      "createdAt": "2026-03-23T00:00:00.000Z"
+    },
+    {
+      "id": "goal_raid_enforcetac",
+      "title": "RAID EnforceTac Messe-Outreach versandfertig",
+      "type": "medium-term",
+      "timeframe": "2026-04-01",
+      "parentGoalId": null,
+      "projectId": "raid-enforcetac",
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [],
+      "createdAt": "2026-03-23T00:00:00.000Z"
+    },
+    {
+      "id": "goal_agent_system",
+      "title": "Agent-System (Orchestrator + Sub-Agents + Teams) produktiv im Einsatz",
+      "type": "medium-term",
+      "timeframe": "2026-03-31",
+      "parentGoalId": null,
+      "projectId": null,
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [],
+      "createdAt": "2026-03-23T00:00:00.000Z"
+    },
+    {
+      "id": "goal_fg_bau_crm",
+      "title": "FG Bau HubSpot CRM-Setup abgeschlossen",
+      "type": "medium-term",
+      "timeframe": "2026-06-30",
+      "parentGoalId": null,
+      "projectId": "fg-bau",
+      "status": "in-progress",
+      "milestones": [],
+      "tasks": [],
+      "createdAt": "2026-03-23T00:00:00.000Z"
+    }
+  ]
 }
