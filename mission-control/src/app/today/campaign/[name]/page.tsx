@@ -3,16 +3,15 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { use } from "react";
 import Link from "next/link";
-import { ArrowLeft, Users, Mail, MailOpen, MessageSquare, UserPlus, AlertTriangle, Clock } from "lucide-react";
+import { ArrowLeft, Users, Mail, MailOpen, MessageSquare, UserPlus, AlertTriangle, Clock, RefreshCw } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-interface CampaignStats { total_leads: number; sent: number; opened: number; open_rate: number; replies: number; reply_rate: number; accepts: number; accept_rate: number; bounces: number; bounce_rate: number }
+interface CampaignStats { total_leads: number; sent: number; opened: number; open_rate: number; replied: number; reply_rate: number; accepts: number; accept_rate: number; bounces: number; bounce_rate: number }
 interface OpenReply { lead_name: string; company: string; time_ago: string; preview: string }
-interface Campaign { name: string; stats: CampaignStats; assessment: string; recommendations: string[]; open_replies: OpenReply[]; alert_level: "info" | "warning" | "critical" }
-interface DailyBriefing { date: string; campaigns: Campaign[] }
+interface Campaign { name: string; status: string; stats: CampaignStats; assessment: string; recommendations: string[]; open_replies: OpenReply[]; alert_level: "info" | "warning" | "critical" }
 
 const MONO = { fontFamily: "var(--font-mono)" };
 const HEADING = { fontFamily: "var(--font-heading)" };
@@ -61,20 +60,42 @@ export default function CampaignDetailPage({ params }: { params: Promise<{ name:
   const campaignName = decodeURIComponent(name);
   const [campaign, setCampaign] = useState<Campaign | null>(null);
   const [loading, setLoading] = useState(true);
-  const [notFound, setNotFound] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const init = useRef(false);
 
   const fetchData = useCallback(async () => {
     try {
       if (!init.current) setLoading(true);
-      const res = await apiFetch("/api/briefing");
-      if (!res.ok || res.status === 204) { setNotFound(true); return; }
-      const data: DailyBriefing = await res.json();
-      const found = data.campaigns?.find((c) => c.name.toLowerCase() === campaignName.toLowerCase());
-      if (found) { setCampaign(found); setNotFound(false); } else { setNotFound(true); }
+      const res = await apiFetch(`/api/today/lemlist/${encodeURIComponent(campaignName)}`);
+
+      if (res.status === 404) {
+        setError("Kampagne nicht gefunden. Moeglicherweise umbenannt oder archiviert.");
+        setCampaign(null);
+        return;
+      }
+
+      if (res.status === 503) {
+        setError("Lemlist gerade nicht erreichbar. Versuche es in einer Minute erneut.");
+        // Keep old data if we had it
+        return;
+      }
+
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        setError((body as { error?: string }).error ?? "Unbekannter Fehler");
+        return;
+      }
+
+      const data: Campaign = await res.json();
+      setCampaign(data);
+      setError(null);
       init.current = true;
-    } catch { setNotFound(true); } finally { setLoading(false); }
-  }, [campaignName]);
+    } catch {
+      if (!campaign) setError("Verbindung fehlgeschlagen.");
+    } finally {
+      setLoading(false);
+    }
+  }, [campaignName, campaign]);
 
   useEffect(() => {
     fetchData();
@@ -82,14 +103,21 @@ export default function CampaignDetailPage({ params }: { params: Promise<{ name:
     return () => clearInterval(iv);
   }, [fetchData]);
 
-  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="flex flex-col items-center gap-3"><div className="sil-spinner" /><p className="text-sm sil-text-muted">Laden...</p></div></div>;
+  if (loading) return <div className="min-h-screen flex items-center justify-center"><div className="flex flex-col items-center gap-3"><div className="sil-spinner" /><p className="text-sm sil-text-muted">Lade Kampagnendaten...</p></div></div>;
 
-  if (notFound || !campaign) return (
+  if (error && !campaign) return (
     <div className="min-h-screen px-4 py-8 md:px-6"><div className="mx-auto max-w-4xl">
       <Link href="/today" className="inline-flex items-center gap-1.5 text-[13px] sil-text-muted hover:sil-text-accent transition-colors"><ArrowLeft className="h-4 w-4" /> Zurueck</Link>
-      <div className="text-center py-20"><p className="sil-text-muted">Kein Briefing fuer &ldquo;{campaignName}&rdquo; vorhanden.</p><p className="text-[12px] sil-text-subtle mt-2">Wird beim Morning Briefing generiert.</p></div>
+      <div className="text-center py-20">
+        <p className="sil-text-muted">{error}</p>
+        <button onClick={fetchData} className="mt-4 inline-flex items-center gap-1.5 text-[13px] sil-text-accent hover:underline">
+          <RefreshCw className="h-3.5 w-3.5" /> Erneut versuchen
+        </button>
+      </div>
     </div></div>
   );
+
+  if (!campaign) return null;
 
   const { stats } = campaign;
 
@@ -118,7 +146,7 @@ export default function CampaignDetailPage({ params }: { params: Promise<{ name:
           <StatCard icon={Users} label="Leads" value={stats.total_leads} />
           <StatCard icon={Mail} label="Gesendet" value={stats.sent} />
           <StatCard icon={MailOpen} label="Geoeffnet" value={stats.opened} rate={stats.open_rate} rateLabel="Rate" rateHex={rateColor(stats.open_rate, 40, 20)} />
-          <StatCard icon={MessageSquare} label="Antworten" value={stats.replies} rate={stats.reply_rate} rateLabel="Rate" rateHex={rateColor(stats.reply_rate, 10, 5)} />
+          <StatCard icon={MessageSquare} label="Antworten" value={stats.replied} rate={stats.reply_rate} rateLabel="Rate" rateHex={rateColor(stats.reply_rate, 10, 5)} />
           <StatCard icon={UserPlus} label="Akzeptiert" value={stats.accepts} rate={stats.accept_rate} rateLabel="Rate" rateHex={rateColor(stats.accept_rate, 30, 15)} />
           <StatCard icon={AlertTriangle} label="Bounces" value={stats.bounces} rate={stats.bounce_rate} rateLabel="Rate" rateHex={stats.bounce_rate <= 5 ? "#10B981" : stats.bounce_rate <= 10 ? "#D97706" : "#DC2626"} />
         </div>
@@ -162,7 +190,7 @@ export default function CampaignDetailPage({ params }: { params: Promise<{ name:
         )}
 
         <footer className="text-center pt-5 pb-6">
-          <p className="text-[10px] sil-text-subtle">Campaign Analyst &middot; daily-briefing.json</p>
+          <p className="text-[10px] sil-text-subtle">Live Lemlist Data &middot; Auto-Refresh 30s</p>
         </footer>
       </div>
     </div>

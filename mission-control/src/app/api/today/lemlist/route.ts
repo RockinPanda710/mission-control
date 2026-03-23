@@ -156,10 +156,11 @@ export async function GET() {
     const active = await Promise.all(
       activeCampaignRaw.map(async (campaign) => {
         const id = campaign._id;
-        const [emailSent, emailOpened, emailReplied, liInviteSent, liAccepted, liReplied] = await Promise.all([
+        const [emailSent, emailOpened, emailReplied, emailBounced, liInviteSent, liAccepted, liReplied] = await Promise.all([
           lemFetch(`/activities?campaignId=${id}&type=emailsSent`) as Promise<RawActivity[] | null>,
           lemFetch(`/activities?campaignId=${id}&type=emailsOpened`) as Promise<RawActivity[] | null>,
           lemFetch(`/activities?campaignId=${id}&type=emailsReplied`) as Promise<RawActivity[] | null>,
+          lemFetch(`/activities?campaignId=${id}&type=emailsBounced`) as Promise<RawActivity[] | null>,
           lemFetch(`/activities?campaignId=${id}&type=linkedinInviteSent`) as Promise<RawActivity[] | null>,
           lemFetch(`/activities?campaignId=${id}&type=linkedinInviteAccepted`) as Promise<RawActivity[] | null>,
           lemFetch(`/activities?campaignId=${id}&type=linkedinReplied`) as Promise<RawActivity[] | null>,
@@ -169,6 +170,7 @@ export async function GET() {
         const opened = emailOpened?.length ?? 0;
         const replied = (emailReplied?.length ?? 0) + (liReplied?.length ?? 0);
         const accepts = liAccepted?.length ?? 0;
+        const bounces = emailBounced?.length ?? 0;
 
         const recentReplies = [...(emailReplied ?? []), ...(liReplied ?? [])]
           .sort((a, b) => new Date(b.createdAt ?? 0).getTime() - new Date(a.createdAt ?? 0).getTime())
@@ -191,6 +193,8 @@ export async function GET() {
             reply_rate: sent > 0 ? Math.round((replied / sent) * 1000) / 10 : 0,
             accepts,
             accept_rate: (liInviteSent?.length ?? 0) > 0 ? Math.round((accepts / (liInviteSent?.length ?? 1)) * 1000) / 10 : 0,
+            bounces,
+            bounce_rate: sent > 0 ? Math.round((bounces / sent) * 1000) / 10 : 0,
             total_leads: sent,
           },
           recentReplies,

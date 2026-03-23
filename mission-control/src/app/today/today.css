@@ -363,6 +363,44 @@
   opacity: 1;
 }
 
+/* ─── AI Top 3 Recommendation ────────────────────────────────────────────── */
+
+.sil-top3-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 20px;
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(180deg, #0EA5E9, #6366F1) 1;
+  border-radius: 0;
+  transition: background 0.15s ease;
+}
+
+.sil-top3-item:hover {
+  background: rgba(14, 165, 233, 0.04);
+}
+
+.sil-top3-reason {
+  font-size: 0.6875rem;
+  color: var(--sil-accent);
+  margin-top: 2px;
+}
+
+.sil-top3-rank {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #0EA5E9, #6366F1);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
 /* ─── Scrollbar ───────────────────────────────────────────────────────────── */
 
 .sil-theme ::-webkit-scrollbar { width: 5px; }

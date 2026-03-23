@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getTasks, getGoals, getProjects, getBrainDump, getInbox, getDecisions, getActivityLog, getAgents } from "@/lib/data";
+import { prioritizeTasks } from "@/lib/task-prioritization";
 
 export const dynamic = "force-dynamic";
 
@@ -56,8 +57,12 @@ export async function GET() {
   );
   const unreadReports = messages.filter((m) => m.status === "unread" && m.type === "report");
 
+  // AI-driven task prioritization (top 3 with reasons)
+  const top3 = prioritizeTasks(tasks, projects);
+
   return NextResponse.json(
     {
+      top3,
       stats: {
         totalTasks: tasks.length,
         inProgressTasks: inProgressTasks.length,

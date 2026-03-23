@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, type KeyboardEvent } from "react";
-import { Check, Plus, ArrowRight, ChevronRight, AlertTriangle } from "lucide-react";
+import { Check, Plus, ArrowRight, ChevronRight, AlertTriangle, Sparkles } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { apiFetch } from "@/lib/api-client";
@@ -56,7 +56,7 @@ interface CalendarEvent { title: string; start: string; end: string; location: s
 
 interface LemlistCampaign {
   id: string; name: string; status: string;
-  stats: { sent: number; opened: number; open_rate: number; replied: number; reply_rate: number; accepts: number; accept_rate: number; total_leads: number };
+  stats: { sent: number; opened: number; open_rate: number; replied: number; reply_rate: number; accepts: number; accept_rate: number; bounces: number; bounce_rate: number; total_leads: number };
   recentReplies: { leadName: string; company: string; text: string; createdAt: string }[];
 }
 
@@ -67,6 +67,8 @@ interface Insight { type: string; icon: string; campaign: string; message: strin
 interface LemlistData { active: LemlistCampaign[]; inactive: LemlistInactive[]; insights: Insight[] }
 
 interface ReminderData { items: string[]; hint?: string }
+
+interface PrioritizedTask { task: Task; score: number; reason: string }
 
 const POLL_INTERVAL = 30_000;
 const MONO = { fontFamily: "var(--font-mono)" };
@@ -150,6 +152,7 @@ function QuickAdd({ onAdd }: { onAdd: (t: string) => void }) {
 export default function TodayPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [top3, setTop3] = useState<PrioritizedTask[]>([]);
   const [calEvents, setCalEvents] = useState<CalendarEvent[]>([]);
   const [lemlist, setLemlist] = useState<LemlistData>({ active: [], inactive: [], insights: [] });
   const [reminders, setReminders] = useState<ReminderData>({ items: [] });
@@ -165,7 +168,12 @@ export default function TodayPage() {
         apiFetch("/api/today/lemlist").catch(() => null),
         apiFetch("/api/today/reminders").catch(() => null),
       ]);
-      if (dashRes.ok) { const j = await dashRes.json(); setTasks(j.tasks ?? []); setProjects(j.projects ?? []); }
+      if (dashRes.ok) {
+        const j = await dashRes.json();
+        setTasks(j.tasks ?? []);
+        setProjects(j.projects ?? []);
+        setTop3(j.top3 ?? []);
+      }
       if (calRes?.ok) { const j = await calRes.json(); setCalEvents(j.events ?? []); }
       if (lemRes?.ok) { const j: LemlistData = await lemRes.json(); setLemlist(j); }
       if (remRes?.ok) { const j = await remRes.json(); setReminders(j); }
@@ -213,6 +221,7 @@ export default function TodayPage() {
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const done = active.filter((t) => t.kanban === "done" && t.completedAt && new Date(t.completedAt) >= today);
   const openCount = active.filter((t) => t.kanban !== "done").length;
+  const activeProjects = projects.filter(p => p.status === "active" && !p.deletedAt);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center"><div className="flex flex-col items-center gap-3"><div className="sil-spinner" /><p className="text-sm sil-text-muted">Laden...</p></div></div>;
@@ -236,12 +245,14 @@ export default function TodayPage() {
               <p className="text-[14px] sil-text-muted mb-3">{formatDate()}</p>
 
               <div className="flex items-center justify-center gap-3 mb-4">
-                <div className="relative flex items-center justify-center">
-                  <ProgressRing done={done.length} total={totalTasks} size={40} />
-                  <span className="absolute text-[10px] font-bold sil-text" style={MONO}>
-                    {totalTasks > 0 ? Math.round((done.length / totalTasks) * 100) : 0}%
-                  </span>
-                </div>
+                {totalTasks > 0 && (
+                  <div className="relative flex items-center justify-center">
+                    <ProgressRing done={done.length} total={totalTasks} size={40} />
+                    <span className="absolute text-[10px] font-bold sil-text" style={MONO}>
+                      {Math.round((done.length / totalTasks) * 100)}%
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <span className="sil-stat-pill"><span className="font-semibold sil-text" style={MONO}>{openCount}</span> <span className="sil-text-muted">offen</span></span>
                   <span className="sil-stat-pill"><span className="font-semibold" style={{ ...MONO, color: "#10B981" }}>{done.length}</span> <span className="sil-text-muted">erledigt</span></span>
@@ -261,10 +272,38 @@ export default function TodayPage() {
           {/* ── FOCUS Panel ── */}
           <div className="lg:col-span-7 sil-panel sil-animate sil-delay-2">
 
+            {/* AI Top 3 Recommendation */}
+            <SectionHeader label="Empfehlung" count={top3.length} dotColor="url(#sil-icon-gradient)" />
+            {top3.length > 0 ? (
+              <div className="pb-1">
+                {top3.map((p, i) => (
+                  <button
+                    key={p.task.id}
+                    onClick={() => toggle(p.task.id, true)}
+                    className="sil-top3-item group w-full text-left"
+                  >
+                    <div className="sil-top3-rank">{i + 1}</div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between gap-2">
+                        <p className="text-[13px] leading-snug">{p.task.title}</p>
+                        <Check className="h-3 w-3 sil-text-subtle sil-check-hint flex-shrink-0 mt-0.5" />
+                      </div>
+                      <p className="sil-top3-reason">{p.reason}</p>
+                    </div>
+                    {p.task.estimatedMinutes && <span className="text-[11px] sil-text-subtle mt-0.5 flex-shrink-0" style={MONO}>~{p.task.estimatedMinutes}m</span>}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="px-5 pb-4 text-[12px] sil-text-subtle">Keine offenen Tasks fuer Priorisierung.</p>
+            )}
+
+            <div className="sil-divider" />
+
             {/* Insights (proactive cross-reference) */}
-            {lemlist.insights.length > 0 && (
+            <SectionHeader label="Insights" count={lemlist.insights.length} dotColor="#F59E0B" />
+            {lemlist.insights.length > 0 ? (
               <>
-                <SectionHeader label="Insights" count={lemlist.insights.length} dotColor="#F59E0B" />
                 <div className="pb-1">
                   {lemlist.insights.map((insight, i) => (
                     <div key={i} className="flex items-start gap-3 px-5 py-2">
@@ -276,9 +315,12 @@ export default function TodayPage() {
                     </div>
                   ))}
                 </div>
-                <div className="sil-divider" />
               </>
+            ) : (
+              <p className="px-5 pb-4 text-[12px] sil-text-subtle">Alles im gruenen Bereich. Keine Auffaelligkeiten.</p>
             )}
+
+            <div className="sil-divider" />
 
             <SectionHeader label="Top Prioritaet" count={doTasks.length} dotColor="#EF4444" />
             {doTasks.length > 0 ? (
@@ -307,9 +349,9 @@ export default function TodayPage() {
           <div className="lg:col-span-5 space-y-4">
 
             {/* Calendar (live from macOS Calendar) */}
-            {calEvents.length > 0 && (
-              <div className="sil-panel sil-animate sil-delay-3">
-                <SectionHeader label="Kalender" count={calEvents.length} dotColor="#6366F1" />
+            <div className="sil-panel sil-animate sil-delay-3">
+              <SectionHeader label="Kalender" count={calEvents.length} dotColor="#6366F1" />
+              {calEvents.length > 0 ? (
                 <div className="pb-2">
                   {calEvents.map((e, i) => (
                     <div key={i} className="flex items-center gap-3 px-5 py-1.5">
@@ -319,13 +361,15 @@ export default function TodayPage() {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="px-5 pb-4 text-[12px] sil-text-subtle">Keine Termine heute. Freier Tag fuer Deep Work.</p>
+              )}
+            </div>
 
             {/* Campaigns (live from Lemlist — only active) */}
-            {lemlist.active.length > 0 && (
-              <div className="sil-panel sil-animate sil-delay-4">
-                <SectionHeader label="Aktive Kampagnen" count={lemlist.active.length} dotColor="#F59E0B" />
+            <div className="sil-panel sil-animate sil-delay-4">
+              <SectionHeader label="Aktive Kampagnen" count={lemlist.active.length} dotColor="#F59E0B" />
+              {lemlist.active.length > 0 ? (
                 <div className="px-3 pb-3">
                   {lemlist.active.map((c) => (
                     <Link key={c.id} href={`/today/campaign/${encodeURIComponent(c.name)}`} className="sil-campaign-link group">
@@ -346,13 +390,15 @@ export default function TodayPage() {
                     </Link>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="px-5 pb-4 text-[12px] sil-text-subtle">Keine aktiven Kampagnen.</p>
+              )}
+            </div>
 
             {/* Reminders (live from Apple Reminders — bidirectional) */}
-            {reminders.items.length > 0 && (
-              <div className="sil-panel sil-animate sil-delay-5">
-                <SectionHeader label="Mobile Inbox" count={reminders.items.length} dotColor="#8B5CF6" />
+            <div className="sil-panel sil-animate sil-delay-5">
+              <SectionHeader label="Mobile Inbox" count={reminders.items.length} dotColor="#8B5CF6" />
+              {reminders.items.length > 0 ? (
                 <div className="pb-2">
                   {reminders.items.map((item, i) => (
                     <button key={i} onClick={() => completeReminder(item)} className="sil-task-item group flex items-center gap-3 w-full text-left px-5 py-1.5">
@@ -363,23 +409,27 @@ export default function TodayPage() {
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="px-5 pb-4 text-[12px] sil-text-subtle">Keine offenen Reminders.</p>
+              )}
+            </div>
 
             {/* Projects (from Mission Control) */}
-            {projects.length > 0 && (
-              <div className="sil-panel sil-animate sil-delay-5">
-                <SectionHeader label="Projekte" count={projects.filter(p => p.status === "active").length} dotColor="#10B981" />
+            <div className="sil-panel sil-animate sil-delay-5">
+              <SectionHeader label="Projekte" count={activeProjects.length} dotColor="#10B981" />
+              {activeProjects.length > 0 ? (
                 <div className="pb-2">
-                  {projects.filter(p => p.status === "active").map((p) => (
+                  {activeProjects.map((p) => (
                     <div key={p.id} className="flex items-center justify-between px-5 py-1.5">
                       <span className="text-[13px] font-medium">{p.name}</span>
                       <span className="text-[10px] sil-text-accent" style={MONO}>{p.status}</span>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="px-5 pb-4 text-[12px] sil-text-subtle">Keine aktiven Projekte.</p>
+              )}
+            </div>
           </div>
         </div>
 
