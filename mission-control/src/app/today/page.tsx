@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef, type KeyboardEvent } from "react";
-import { Check, Plus, ArrowRight, ChevronRight, AlertTriangle, Sparkles } from "lucide-react";
+import { Check, Plus, ArrowRight, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { apiFetch } from "@/lib/api-client";
