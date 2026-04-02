@@ -2,6 +2,10 @@ node_modules/
 .next/
 .env*
 !.env.example
+
+# OS files
+.DS_Store
+._*
 CLAUDE.local.md
 *.log
 dist/
