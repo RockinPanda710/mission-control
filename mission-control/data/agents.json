@@ -35,11 +35,7 @@
         "skill-sales-pipeline",
         "sop-typ-a-outbound",
         "skill-angebots-generator",
-        "skill-icp-builder",
-        "skill-acceptance-tracker",
-        "skill-campaign-packager",
-        "skill-connection-campaign-builder",
-        "skill-lead-scorer"
+        "skill-icp-builder"
       ],
       "status": "active",
       "createdAt": "2026-03-06T08:00:00.000Z",
@@ -61,8 +57,7 @@
       "skillIds": [
         "skill-icp-builder",
         "sop-lead-sourcing",
-        "skill-hook-research",
-        "skill-campaign-packager"
+        "skill-hook-research"
       ],
       "status": "active",
       "createdAt": "2026-03-06T08:00:00.000Z",
@@ -85,8 +80,7 @@
       "skillIds": [
         "skill-hook-research",
         "sop-dossiers",
-        "skill-company-dossier-generator",
-        "skill-campaign-packager"
+        "skill-company-dossier-generator"
       ],
       "status": "active",
       "createdAt": "2026-03-06T08:00:00.000Z",
@@ -131,8 +125,7 @@
         "skill-outreach-generator",
         "sop-outreach",
         "skill-sales-pitch-generator",
-        "skill-webworks-outreach",
-        "skill-campaign-packager"
+        "skill-webworks-outreach"
       ],
       "status": "active",
       "createdAt": "2026-03-06T08:00:00.000Z",
@@ -153,11 +146,8 @@
       "skillIds": [
         "skill-lemlist-import",
         "sop-lemlist-handoff",
-        "skill-campaign-packager",
-        "skill-connection-campaign-builder",
         "skill-lemlist-mcp",
-        "skill-webworks-outreach",
-        "skill-acceptance-tracker"
+        "skill-webworks-outreach"
       ],
       "status": "active",
       "createdAt": "2026-03-06T08:00:00.000Z",
@@ -200,7 +190,6 @@
       ],
       "skillIds": [
         "skill-sales-pipeline",
-        "skill-connection-campaign-builder",
         "skill-slide-pdf-generator",
         "skill-wat-pipeline-sync"
       ],

@@ -17,7 +17,11 @@ import type {
   Conversation,
 } from "./types";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// Use MISSION_CONTROL_DATA_DIR env var if set (recommended for production/launchd).
+// Falls back to process.cwd()/data for local development.
+const DATA_DIR = process.env.MISSION_CONTROL_DATA_DIR
+  ? path.resolve(process.env.MISSION_CONTROL_DATA_DIR)
+  : path.join(process.cwd(), "data");
 const CHECKPOINTS_DIR = path.join(DATA_DIR, "checkpoints");
 
 function filePath(name: string): string {
