@@ -227,6 +227,294 @@
       "tags": [],
       "createdAt": "2026-03-07T23:14:44.315Z",
       "updatedAt": "2026-03-07T23:15:31.854Z"
+    },
+    {
+      "id": "skill-anthropic-consultant",
+      "name": "anthropic-consultant",
+      "description": "Umfassendes Wissens-Toolkit für Anthropic Claude Zertifizierungen. Deckt alle CCA-F Prüfungsdomänen ab: 10 Reference Modules, Exam-Workflow über Playwright, Lernpfade für alle 13 Anthropic Academy Kurse. TRIGGERS: Claude Zertifizierung, CCA-F, Anthropic Academy, Claude API, Agentic Architecture, Prompt Engineering",
+      "content": "Siehe Skills/skills/anthropic-consultant/SKILL.md",
+      "agentIds": [
+        "pm-agent"
+      ],
+      "tags": [
+        "Claude Zertifizierung",
+        "CCA-F",
+        "Anthropic Academy",
+        "Claude API",
+        "MCP",
+        "Claude Code"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-email-first-campaign",
+      "name": "email-first-campaign",
+      "description": "Email-only Outreach Sequenzen für Leads mit verifizierter E-Mail-Adresse. 5-Step Sequenz: Email → LinkedIn Visit → Connection → Email → Email. Mit Umlaut-Konvertierung und Zeichenlimit-Management. TRIGGERS: Email Kampagne, Email-First Outreach, Email Sequenz, Outreach Automation",
+      "content": "Siehe Skills/skills/email-first-campaign/SKILL.md",
+      "agentIds": [
+        "outreach-agent",
+        "campaign-agent"
+      ],
+      "tags": [
+        "Email Kampagne",
+        "Email-First",
+        "Outreach Sequenz",
+        "Automation"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-enterprise-dossier",
+      "name": "enterprise-dossier",
+      "description": "Deep Account Research Orchestrator für C-Level Erstgespräche. 9-Schritt-Prozess: Account Qualification → Desk Research → Wettbewerb → Interviews → SWOT → Dossier → Ansprache → Erstgespräch. Eigenständiger Workflow, nicht Teil der WAT-Pipeline. TRIGGERS: Enterprise Dossier für, Deep Account Research, Erstgespräch vorbereiten",
+      "content": "Siehe Skills/skills/enterprise-dossier/SKILL.md",
+      "agentIds": [
+        "research-agent",
+        "dossier-agent"
+      ],
+      "tags": [
+        "Enterprise Dossier",
+        "Deep Account Research",
+        "Erstgespräch",
+        "C-Level"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-hubspot-consultant",
+      "name": "hubspot-consultant",
+      "description": "Universelles HubSpot Professional Implementierungs-Toolkit. Drei Ebenen: Playbook (Wissen), API (Automatisierung), Browser (UI-Settings). Spezialisiert auf Verbände, SaaS, Agenturen, E-Commerce. Deckt Properties, Pipelines, Workflows, Integrationen ab. TRIGGERS: HubSpot, CRM Setup, Portal einrichten, Properties, Pipeline, Workflow",
+      "content": "Siehe Skills/skills/hubspot-consultant/SKILL.md",
+      "agentIds": [
+        "pm-agent",
+        "coding-agent"
+      ],
+      "tags": [
+        "HubSpot",
+        "CRM Setup",
+        "Portal",
+        "Properties",
+        "Pipeline",
+        "Workflow"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-lead-dashboard-generator",
+      "name": "lead-dashboard-generator",
+      "description": "Generiert interaktive, filterfähige HTML Lead Dashboards aus CSV-Daten. Reusable Client Deliverable mit Scoring, Statusanzeige, Kontaktdaten und optionaler Dossier-Integration im SIL Design System. Tool: generate_lead_dashboard.py (1.645 Zeilen). TRIGGERS: Lead Dashboard, Dashboard Generator, Lead Intelligence, Interactive HTML",
+      "content": "Siehe Skills/skills/lead-dashboard-generator/SKILL.md",
+      "agentIds": [
+        "research-agent",
+        "coding-agent"
+      ],
+      "tags": [
+        "Lead Dashboard",
+        "Dashboard Generator",
+        "Lead Intelligence",
+        "HTML"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-raid-design-system",
+      "name": "raid-design-system",
+      "description": "Verbindliches Design-System für RAID Tactical Media Deliverables. Dark Theme, Burgund #8B1A2B, scharfe Kanten (keine Glassmorphism), Hero mit Vollbild-Hintergrund. Für Proposals, Dashboards, Slide-Decks. TRIGGERS: RAID Design, RAID Proposal, RAID Dashboard, Tactical Media",
+      "content": "Siehe Skills/skills/raid-design-system/SKILL.md",
+      "agentIds": [
+        "coding-agent"
+      ],
+      "tags": [
+        "RAID Design",
+        "RAID Proposal",
+        "RAID Dashboard",
+        "Tactical Media"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-rechnungs-generator",
+      "name": "rechnungs-generator",
+      "description": "Erstellt professionelle PDF-Rechnungen für Lass mal machen Ltd. Fortlaufende Rechnungsnummern (LMM-RE-YYYY-NNN), DIN A4, Reverse-Charge B2B konform, mit Zahlungszielen. Tool: generate_rechnung.py. TRIGGERS: Rechnung erstellen, Rechnung generieren, neue Rechnung, Invoice, PDF",
+      "content": "Siehe Skills/skills/rechnungs-generator/SKILL.md",
+      "agentIds": [
+        "pm-agent"
+      ],
+      "tags": [
+        "Rechnung",
+        "Invoice",
+        "PDF",
+        "LMM",
+        "Rechnungsnummer"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-si-lab-design-system",
+      "name": "si-lab-design-system",
+      "description": "Verbindliches Design-System für Sales Intelligence Labs Deliverables. Light Theme mit dunklen Sections, Electric Blue #0EA5E9 + Indigo, Glassmorphism Cards, Zigzag-Layouts, CSS-Grafiken. Für Kunden-Deliverables, Dashboards, Proposals. TRIGGERS: Design System, SI Labs, Deliverable, Dashboard HTML, Branding",
+      "content": "Siehe Skills/skills/si-lab-design-system/SKILL.md",
+      "agentIds": [
+        "coding-agent"
+      ],
+      "tags": [
+        "Design System",
+        "SI Labs",
+        "Dashboard",
+        "Präsentation",
+        "Branding"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-si-lab-pipeline",
+      "name": "si-lab-pipeline",
+      "description": "Geführter Orchestrator für Typ-A-Outbound-Projekte. 7 Schritte: ICP → Lead Sourcing → Audit → Dossiers → Kontakte → Outreach → Lemlist mit Status-Detection und Gates. Rene triggert, Agent führt durch. TRIGGERS: Akquise starten, Akquise für, Sales Projekt, wo stehen wir, nächster Schritt",
+      "content": "Siehe Skills/skills/si-lab-pipeline/SKILL.md",
+      "agentIds": [
+        "pm-agent",
+        "research-agent",
+        "outreach-agent",
+        "campaign-agent"
+      ],
+      "tags": [
+        "Akquise",
+        "Pipeline",
+        "Typ A Outbound",
+        "Sales Projekt"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-si-lab-wiki",
+      "name": "si-lab-wiki",
+      "description": "Zentrales Capability Wiki für Sales Intelligence Labs. Generiert automatisch durchsuchbare HTML-Übersicht aller Skills, Tools, Workflows und Agents aus SKILL.md-Dateien, Python-Scripts und Workflow-SOPs. TRIGGERS: Wiki, Übersicht, was haben wir, Capability, Tool Stack, Wiki aktualisieren",
+      "content": "Siehe Skills/skills/si-lab-wiki/SKILL.md",
+      "agentIds": [
+        "pm-agent"
+      ],
+      "tags": [
+        "Wiki",
+        "Übersicht",
+        "Capability",
+        "Tool Stack"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-sil-content",
+      "name": "sil-content",
+      "description": "Content-Ideen und Episode-Briefings für SIL Sessions Videoformat. Zwei Modi: Pitch me (automatische Vorschläge) und Sparring (eine Idee schärfen). Drei Säulen: So sieht's aus, So baut man's, Klartext. TRIGGERS: Content Ideen, Pitch me, Episode, Video Idee, SIL Sessions",
+      "content": "Siehe Skills/skills/sil-content/SKILL.md",
+      "agentIds": [
+        "pm-agent"
+      ],
+      "tags": [
+        "Content",
+        "Video Idee",
+        "SIL Sessions",
+        "Episode",
+        "Pitch"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-sil-content-workspace",
+      "name": "sil-content-workspace",
+      "description": "Workspace für SIL Content Iterationen und Entwürfe. Begleitend zum sil-content Skill für Content-Entwicklung, Skript-Iterationen, Ablage von Entwürfen. TRIGGERS: Content Workspace, Iteration, Draft, Content Entwicklung",
+      "content": "Siehe Skills/skills/sil-content-workspace/SKILL.md",
+      "agentIds": [
+        "pm-agent"
+      ],
+      "tags": [
+        "Content Workspace",
+        "Iteration",
+        "Draft"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-thumbnail-generator",
+      "name": "thumbnail-generator",
+      "description": "Grafikdesigner für YouTube/Social Media Thumbnails. Zwei Design-Welten: MAEP (Dokumentar/Vlog) und SIL Sessions (Brand/Corporate). Generiert aus HTML-Templates mit Playwright Screenshots. Tool: generate_thumbnail.py. TRIGGERS: Thumbnail, Vorschaubild, YouTube Bild, LinkedIn Grafik",
+      "content": "Siehe Skills/skills/thumbnail-generator/SKILL.md",
+      "agentIds": [
+        "coding-agent"
+      ],
+      "tags": [
+        "Thumbnail",
+        "YouTube",
+        "LinkedIn Grafik",
+        "MAEP",
+        "SIL Sessions"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-transcript-to-todos",
+      "name": "transcript-to-todos",
+      "description": "Extrahiert aus Meeting-Transkripten (z.B. Spark) strukturierte To-Dos mit Aktionen, Deadlines und Verantwortlichen. Schreibt direkt ins Second Brain System (tasks.json). TRIGGERS: Transkript verarbeiten, To-Dos aus Meeting, Meeting-Notizen importieren, Action Items",
+      "content": "Siehe Skills/skills/transcript-to-todos/SKILL.md",
+      "agentIds": [
+        "pm-agent"
+      ],
+      "tags": [
+        "Transkript",
+        "Meeting",
+        "To-Dos",
+        "Action Items",
+        "Second Brain"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-vat3-vies-generator",
+      "name": "vat3-vies-generator",
+      "description": "Vorbereitung der irischen Umsatzsteuervoranmeldung (VAT3) und EU-Meldung (VIES) für Lass mal machen Ltd. als PDF für den Steuerberater. Kategorisiert Transaktionen, berechnet VAT-Felder, generiert Schedules. Tool: generate_vat3_report.py. TRIGGERS: VAT3 Return, VIES Return, Steuerbericht, Umsatzsteuervoranmeldung",
+      "content": "Siehe Skills/skills/vat3-vies-generator/SKILL.md",
+      "agentIds": [
+        "pm-agent"
+      ],
+      "tags": [
+        "VAT3",
+        "VIES",
+        "Steuerbericht",
+        "Buchhaltung",
+        "Irland"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
+    },
+    {
+      "id": "skill-visual-editor",
+      "name": "visual-editor",
+      "description": "Drag-and-Drop Overlay Editor für Website-Projekte. Floating FAB Button, vollständiger visueller Editor für Element-Positionierung, Spacing und CSS-Anpassungen direkt im Browser. Standard für alle Website-Projekte. TRIGGERS: Visual Editor, Website Tool, Drag-and-Drop, CSS Export",
+      "content": "Siehe Skills/skills/visual-editor/SKILL.md",
+      "agentIds": [
+        "coding-agent"
+      ],
+      "tags": [
+        "Visual Editor",
+        "Website",
+        "Drag-and-Drop",
+        "CSS Export"
+      ],
+      "createdAt": "2026-04-13T08:20:03.000Z",
+      "updatedAt": "2026-04-13T08:20:03.000Z"
     }
   ]
 }

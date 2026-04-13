@@ -1,117 +1,15 @@
 {
-  "date": "2026-03-23",
-  "generated_at": "2026-03-23T08:15:00.000Z",
-  "calendar": [
-    { "time": "09:00", "title": "Deep Work Block", "type": "block" },
-    { "time": "14:00", "title": "WebWorks Review Call", "type": "meeting" },
-    { "time": "16:00", "title": "RAID Website Feedback", "type": "meeting" }
-  ],
-  "top3": [
-    {
-      "task_id": "task_wwde_outreach",
-      "title": "WebWorks DE Outreach kalibrieren + Batch-Generierung",
-      "reason": "Dossiers und Kontakte sind fertig. Outreach ist der Bottleneck.",
-      "effort_estimate": "2-3h",
-      "done": false
-    },
-    {
-      "task_id": "task_raid_lemlist",
-      "title": "RAID EnforceTac Lemlist-Import vorbereiten",
-      "reason": "Outreach-Nachrichten fertig. Pre-Import Validierung und CSV-Konvertierung ausstehend.",
-      "effort_estimate": "1h",
-      "done": false
-    },
-    {
-      "task_id": "task_ww04_contacts",
-      "title": "Ansprechpartner finden (WebWorks CH)",
-      "reason": "LinkedIn Enrichment noch offen. Blockiert Outreach fuer CH.",
-      "effort_estimate": "2h",
-      "done": false
-    }
-  ],
-  "nice_to_have": [
-    {
-      "task_id": "task_agent_test",
-      "title": "Agent-System testen"
-    },
-    {
-      "task_id": "task_fg01_hubspot",
-      "title": "HubSpot CRM Setup (FG Bau)"
-    }
-  ],
-  "campaigns": [
-    {
-      "name": "WebWorks CH",
-      "stats": {
-        "total_leads": 255,
-        "sent": 255,
-        "opened": 187,
-        "open_rate": 73.3,
-        "replies": 21,
-        "reply_rate": 8.2,
-        "accepts": 82,
-        "accept_rate": 32.2,
-        "bounces": 3,
-        "bounce_rate": 1.2
-      },
-      "assessment": "Die Kampagne laeuft solide. 73% Oeffnungsrate ist ueberdurchschnittlich. Die 8.2% Antwortrate liegt im guten Bereich.\n\nAuffaellig: Die Connection Akzeptanzrate (32%) ist stark bei A-Leads, aber nur 18% bei B-Leads. Der Hook resoniert bei Entscheidern besser als bei Operativen.",
-      "recommendations": [
-        "B-Lead Hook ueberarbeiten: weniger ROI Argumentation, mehr Hands-on Mehrwert",
-        "Follow-up Timing von 7 auf 5 Tage verkuerzen (Engagement Fenster nutzen)",
-        "3 Replies seit gestern offen: jetzt beantworten"
-      ],
-      "open_replies": [
-        {
-          "lead_name": "Thomas Meier",
-          "company": "ShopTech AG",
-          "time_ago": "vor 2h",
-          "preview": "Klingt interessant, haben Sie naechste Woche Zeit fuer ein kurzes Gespraech?"
-        },
-        {
-          "lead_name": "Sandra Weber",
-          "company": "DigitalCommerce GmbH",
-          "time_ago": "vor 1 Tag",
-          "preview": "Wir suchen gerade nach einer Loesung fuer unseren Outbound. Koennen Sie mir mehr schicken?"
-        },
-        {
-          "lead_name": "Marco Brunetti",
-          "company": "SwissRetail SA",
-          "time_ago": "vor 2 Tagen",
-          "preview": "Danke fuer die Nachricht. Was genau bieten Sie an?"
-        }
-      ],
-      "alert_level": "warning"
-    }
-  ],
+  "date": "2026-04-13",
+  "generated_at": "2026-04-13T07:15:00.000Z",
+  "calendar": [],
+  "top3": [],
+  "nice_to_have": [],
+  "campaigns": [],
   "inbox_summary": {
-    "unread_count": 5,
-    "from_leads": 2,
-    "highlight": "2 neue Lead-Antworten, 1 Terminbestaetigung von RAID"
+    "unread_count": 0,
+    "from_leads": 0,
+    "highlight": "Noch kein Morning Briefing heute. Orchestrator bitte starten."
   },
-  "projects": [
-    {
-      "name": "WebWorks CH",
-      "phase": "Step 04 — Contacts",
-      "next_action": "LinkedIn Enrichment abschliessen",
-      "assessment": "Apollo People Search laeuft. LinkedIn Enrichment fuer fehlende URLs steht aus."
-    },
-    {
-      "name": "WebWorks DE",
-      "phase": "Step 05 — Outreach",
-      "next_action": "Kalibrierung starten",
-      "assessment": "Auf Kurs. Dossiers und Kontakte komplett. Outreach ist der naechste Schritt."
-    },
-    {
-      "name": "RAID EnforceTac",
-      "phase": "Step 06 — Lemlist",
-      "next_action": "Pre-Import Validierung + CSV",
-      "assessment": "Alles vorbereitet. Nur noch Lemlist-Uebergabe."
-    },
-    {
-      "name": "FG Bau",
-      "phase": "Kickoff — CRM",
-      "next_action": "HubSpot Account einrichten",
-      "assessment": "Start ab KW 10. Noch keine Aktivitaet."
-    }
-  ]
+  "projects": [],
+  "_note": "Date updated by Freshness Check. Vollständiges Briefing läuft beim nächsten Morning Briefing durch den Orchestrator."
 }

@@ -5,6 +5,7 @@ import { prioritizeTasks } from "@/lib/task-prioritization";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
+  try {
   // Read all data files in parallel (reads are safe, no locking needed)
   const [tasksData, goalsData, projectsData, brainDumpData, inboxData, decisionsData, activityData, agentsData] = await Promise.all([
     getTasks(),
@@ -92,4 +93,7 @@ export async function GET() {
     },
     { headers: { "Cache-Control": "private, max-age=2, stale-while-revalidate=5" } },
   );
+  } catch {
+    return NextResponse.json({ error: "Failed to load dashboard data" }, { status: 500 });
+  }
 }

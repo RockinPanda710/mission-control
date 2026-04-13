@@ -35,6 +35,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "action must be 'complete' and name is required" }, { status: 400 });
     }
 
+    // NOTE: osascript shell escaping — the AppleScript is passed via -e '...'.
+    // Single quotes inside the script would break the shell quoting, so we
+    // replace each ' with '"'"' (end-single-quote, double-quoted-apostrophe, new-single-quote).
+    // This is the standard POSIX shell trick for embedding single quotes in single-quoted strings.
     // Escape single quotes in the reminder name for osascript
     const safeName = name.replace(/'/g, "'\\''");
     const script = `tell application "Reminders" to set completed of reminder "${safeName}" of list "${LIST_NAME}" to true`;

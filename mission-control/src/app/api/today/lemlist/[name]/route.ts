@@ -3,7 +3,7 @@ import { assessCampaign, type CampaignStats, type RecentReply } from "@/lib/camp
 
 export const dynamic = "force-dynamic";
 
-const BASE = "https://api.lemlist.com/api";
+const BASE = process.env.LEMLIST_BASE_URL ?? "https://api.lemlist.com/api";
 const KEY = process.env.LEMLIST_API_KEY ?? "";
 const AUTH = "Basic " + Buffer.from(":" + KEY).toString("base64");
 const HEADERS = { Authorization: AUTH, "Content-Type": "application/json" };

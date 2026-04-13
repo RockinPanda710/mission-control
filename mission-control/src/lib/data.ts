@@ -14,6 +14,7 @@ import type {
   ActiveRunsFile,
   LeadsFile,
   DossiersFile,
+  MissionsFile,
   Conversation,
 } from "./types";
 
@@ -176,6 +177,7 @@ const fileMutexes = {
   activeRuns: new Mutex(),
   daemonConfig: new Mutex(),
   conversations: new Mutex(),
+  missions: new Mutex(),
 };
 
 // ─── Read functions (no locking needed — reads are safe) ──────────────────────
@@ -685,6 +687,32 @@ export async function mutateProjectDossiers<T>(
     }
     const result = await fn(data);
     await writeFile(projectDossiersPath(projectId), JSON.stringify(data, null, 2), "utf-8");
+    return result;
+  });
+}
+
+// ─── Missions file ────────────────────────────────────────────────────────────
+
+export async function getMissions(): Promise<MissionsFile> {
+  try {
+    const raw = await readFile(filePath("missions.json"), "utf-8");
+    return JSON.parse(raw) as MissionsFile;
+  } catch {
+    return { missions: [] };
+  }
+}
+
+export async function mutateMissions<T>(fn: (data: MissionsFile) => Promise<T>): Promise<T> {
+  return fileMutexes.missions.runExclusive(async () => {
+    let data: MissionsFile;
+    try {
+      const raw = await readFile(filePath("missions.json"), "utf-8");
+      data = JSON.parse(raw) as MissionsFile;
+    } catch {
+      data = { missions: [] };
+    }
+    const result = await fn(data);
+    await _writeJson("missions.json", data);
     return result;
   });
 }

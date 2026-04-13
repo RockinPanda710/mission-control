@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFile } from "fs/promises";
 import { spawn } from "child_process";
 import path from "path";
+import { getMissions, mutateMissions, mutateInbox } from "@/lib/data";
+import type { InboxFile } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
 
@@ -54,11 +56,11 @@ interface DecisionEntry {
   status: string;
 }
 
-function readJSON<T>(filename: string): T | null {
+async function readJSON<T>(filename: string): Promise<T | null> {
   try {
     const filePath = path.join(DATA_DIR, filename);
-    if (!existsSync(filePath)) return null;
-    return JSON.parse(readFileSync(filePath, "utf-8")) as T;
+    const raw = await readFile(filePath, "utf-8");
+    return JSON.parse(raw) as T;
   } catch {
     return null;
   }
@@ -83,12 +85,12 @@ const GRACE_PERIOD_MS = 30_000; // 30 seconds — give chain dispatch time befor
  * This acts as a heartbeat safety net — if chain dispatch from run-task.ts
  * fails silently, the reconciler picks up the slack on the next frontend poll.
  */
-function reconcileStuckMissions(missions: MissionEntry[]): boolean {
+async function reconcileStuckMissions(missions: MissionEntry[]): Promise<boolean> {
   let changed = false;
 
-  const runsData = readJSON<{ runs: RunEntry[] }>("active-runs.json");
-  const tasksData = readJSON<{ tasks: TaskEntry[] }>("tasks.json");
-  const decisionsData = readJSON<{ decisions: DecisionEntry[] }>("decisions.json");
+  const runsData = await readJSON<{ runs: RunEntry[] }>("active-runs.json");
+  const tasksData = await readJSON<{ tasks: TaskEntry[] }>("tasks.json");
+  const decisionsData = await readJSON<{ decisions: DecisionEntry[] }>("decisions.json");
   if (!tasksData) return false;
 
   const allRuns = runsData?.runs ?? [];
@@ -99,7 +101,7 @@ function reconcileStuckMissions(missions: MissionEntry[]): boolean {
   );
 
   // Load concurrency config for re-dispatch
-  const configData = readJSON<{
+  const configData = await readJSON<{
     concurrency: { maxParallelAgents: number };
     execution: { agentTeams?: boolean };
   }>("daemon-config.json");
@@ -140,7 +142,7 @@ function reconcileStuckMissions(missions: MissionEntry[]): boolean {
       mission.completedAt = new Date().toISOString();
       mission.completedTasks = projectTasks.filter((t) => t.kanban === "done").length;
       changed = true;
-      postMissionInboxReport(mission);
+      await postMissionInboxReport(mission);
       continue;
     }
 
@@ -204,7 +206,7 @@ function reconcileStuckMissions(missions: MissionEntry[]): boolean {
     mission.status = "stalled";
     mission.skippedTasks = remaining.length - dispatchable.length;
     changed = true;
-    postMissionInboxReport(mission);
+    await postMissionInboxReport(mission);
   }
 
   return changed;
@@ -248,66 +250,60 @@ function spawnMissionTasks(
 }
 
 /**
- * Post a mission report to inbox during reconciliation.
+ * Post a mission report to inbox during reconciliation (async, mutex-protected).
  */
-function postMissionInboxReport(mission: MissionEntry): void {
+async function postMissionInboxReport(mission: MissionEntry): Promise<void> {
   try {
-    const inboxPath = path.join(DATA_DIR, "inbox.json");
-    const inboxRaw = existsSync(inboxPath)
-      ? readFileSync(inboxPath, "utf-8")
-      : '{"messages":[]}';
-    const inboxData = JSON.parse(inboxRaw) as { messages: Array<Record<string, unknown>> };
+    await mutateInbox(async (inboxData: InboxFile) => {
+      const isComplete = mission.status === "completed";
+      const remaining = mission.totalTasks - mission.completedTasks - mission.failedTasks;
+      const subject = isComplete
+        ? `Mission complete: ${mission.completedTasks}/${mission.totalTasks} tasks done`
+        : `Mission stalled: ${mission.completedTasks}/${mission.totalTasks} tasks done, ${remaining} remaining`;
 
-    const isComplete = mission.status === "completed";
-    const remaining = mission.totalTasks - mission.completedTasks - mission.failedTasks;
-    const subject = isComplete
-      ? `Mission complete: ${mission.completedTasks}/${mission.totalTasks} tasks done`
-      : `Mission stalled: ${mission.completedTasks}/${mission.totalTasks} tasks done, ${remaining} remaining`;
+      const lines: string[] = [];
+      if (isComplete) {
+        lines.push(`All ${mission.completedTasks} tasks in this mission have been completed.`);
+      } else {
+        lines.push(`The mission has stalled with ${remaining} task(s) remaining that could not be dispatched.`);
+      }
 
-    const lines: string[] = [];
-    if (isComplete) {
-      lines.push(`All ${mission.completedTasks} tasks in this mission have been completed.`);
-    } else {
-      lines.push(`The mission has stalled with ${remaining} task(s) remaining that could not be dispatched.`);
-    }
+      if (mission.failedTasks > 0) {
+        lines.push(`\n${mission.failedTasks} task(s) failed during execution.`);
+      }
 
-    if (mission.failedTasks > 0) {
-      lines.push(`\n${mission.failedTasks} task(s) failed during execution.`);
-    }
-
-    // List completed tasks with file locations
-    const completed = mission.taskHistory.filter((e) => e.status === "completed");
-    if (completed.length > 0) {
-      lines.push("\n**Completed tasks:**");
-      for (const entry of completed) {
-        lines.push(`- ${entry.taskTitle} (${entry.agentId})`);
-        const filePaths = entry.summary.match(/(?:research|projects|docs|output)\/[\w\-/.]+\.\w+/g);
-        if (filePaths) {
-          for (const fp of [...new Set(filePaths)].slice(0, 3)) {
-            lines.push(`  → ${fp}`);
+      // List completed tasks with file locations
+      const completed = mission.taskHistory.filter((e) => e.status === "completed");
+      if (completed.length > 0) {
+        lines.push("\n**Completed tasks:**");
+        for (const entry of completed) {
+          lines.push(`- ${entry.taskTitle} (${entry.agentId})`);
+          const filePaths = entry.summary.match(/(?:research|projects|docs|output)\/[\w\-/.]+\.\w+/g);
+          if (filePaths) {
+            for (const fp of [...new Set(filePaths)].slice(0, 3)) {
+              lines.push(`  → ${fp}`);
+            }
           }
         }
       }
-    }
 
-    if (!isComplete) {
-      lines.push("\nPlease check the Status Board for any remaining tasks. Some may need your input on the Decisions page.");
-    }
+      if (!isComplete) {
+        lines.push("\nPlease check the Status Board for any remaining tasks. Some may need your input on the Decisions page.");
+      }
 
-    inboxData.messages.push({
-      id: `msg_${Date.now()}`,
-      from: "system",
-      to: "me",
-      type: "report",
-      taskId: null,
-      subject,
-      body: lines.join("\n"),
-      status: "unread",
-      createdAt: new Date().toISOString(),
-      readAt: null,
+      inboxData.messages.push({
+        id: `msg_${Date.now()}`,
+        from: "system",
+        to: "me",
+        type: "report",
+        taskId: null,
+        subject,
+        body: lines.join("\n"),
+        status: "unread",
+        createdAt: new Date().toISOString(),
+        readAt: null,
+      } as InboxFile["messages"][number]);
     });
-
-    writeFileSync(inboxPath, JSON.stringify(inboxData, null, 2), "utf-8");
   } catch {
     // Best-effort — don't fail the API call
   }
@@ -317,16 +313,23 @@ function postMissionInboxReport(mission: MissionEntry): void {
 
 export async function GET() {
   try {
-    const missionsPath = path.join(DATA_DIR, "missions.json");
-    if (!existsSync(missionsPath)) {
-      return NextResponse.json({ missions: [] });
-    }
-    const data = JSON.parse(readFileSync(missionsPath, "utf-8")) as { missions: MissionEntry[] };
+    const data = await getMissions();
 
     // Reconcile stuck missions on every poll (cheap — only checks when status is "running")
-    const changed = reconcileStuckMissions(data.missions);
-    if (changed) {
-      writeFileSync(missionsPath, JSON.stringify(data, null, 2), "utf-8");
+    const hasRunningMissions = data.missions.some((m) => m.status === "running");
+    if (hasRunningMissions) {
+      const changed = await reconcileStuckMissions(data.missions as MissionEntry[]);
+      if (changed) {
+        await mutateMissions(async (mdata) => {
+          // Merge reconciled mission states back into stored data
+          for (const updated of data.missions as MissionEntry[]) {
+            const idx = mdata.missions.findIndex((m) => m.id === updated.id);
+            if (idx !== -1) {
+              Object.assign(mdata.missions[idx], updated);
+            }
+          }
+        });
+      }
     }
 
     return NextResponse.json(data);

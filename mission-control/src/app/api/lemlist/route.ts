@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const LEMLIST_BASE_URL = "https://api.lemlist.com/api";
+const LEMLIST_BASE_URL = process.env.LEMLIST_BASE_URL ?? "https://api.lemlist.com/api";
 
 function getLemlistHeaders(): Headers | null {
   const apiKey = process.env.LEMLIST_API_KEY;
